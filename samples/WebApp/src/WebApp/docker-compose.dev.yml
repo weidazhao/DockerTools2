@@ -1,7 +1,8 @@
 version: '2'
 
 services:
-  webapp:  
+  webapp: 
+    image: username/webapp:dev
     build:
       dockerfile: Dockerfile.dev
     environment:
