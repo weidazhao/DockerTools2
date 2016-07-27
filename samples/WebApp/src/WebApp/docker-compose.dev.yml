@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  webapp:  
+    build:
+      dockerfile: Dockerfile.dev
+    environment:
+      - REMOTE_DEBUGGING=${REMOTE_DEBUGGING}
+      - DOTNET_PACKAGES_CACHE=/dotnet_packages
+      - APP_ASSEMBLY=${APP_ASSEMBLY}
+    volumes:
+      - .:/app
+      - ~/.nuget/packages:/dotnet_packages:ro
+      - ~/clrdbg:/clrdbg:ro
