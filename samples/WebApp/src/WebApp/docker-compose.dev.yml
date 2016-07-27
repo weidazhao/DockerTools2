@@ -5,9 +5,9 @@ services:
     build:
       dockerfile: Dockerfile.dev
     environment:
-      - REMOTE_DEBUGGING=${REMOTE_DEBUGGING}
-      - DOTNET_PACKAGES_CACHE=/dotnet_packages
       - APP_ASSEMBLY=${APP_ASSEMBLY}
+      - DOTNET_PACKAGES_CACHE=/dotnet_packages
+      - REMOTE_DEBUGGING=${REMOTE_DEBUGGING}
     volumes:
       - .:/app
       - ~/.nuget/packages:/dotnet_packages:ro
