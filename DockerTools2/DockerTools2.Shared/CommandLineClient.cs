@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DockerTools2.Shared
 {
-    public class CommandLineClient : ICommandLineClient
+    public class CommandLineClient
     {
         public Task<string> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken)
         {

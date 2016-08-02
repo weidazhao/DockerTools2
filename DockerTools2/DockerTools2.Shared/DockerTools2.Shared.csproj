@@ -42,8 +42,12 @@
   <ItemGroup>
     <Compile Include="CommandLineClient.cs" />
     <Compile Include="CommandLineClientException.cs" />
-    <Compile Include="DockerExtensions.cs" />
-    <Compile Include="ICommandLineClient.cs" />
+    <Compile Include="DockerComposeClient.cs" />
+    <Compile Include="DockerClient.cs" />
+    <Compile Include="DockerClientExtensions.cs" />
+    <Compile Include="DockerComposeClientExtensions.cs" />
+    <Compile Include="IDockerComposeClient.cs" />
+    <Compile Include="IDockerClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,11 +8,11 @@ namespace DockerTools2.Tests
 {
     public static class Program
     {
-        public static readonly ICommandLineClient client = new CommandLineClient();
+        public static readonly IDockerClient client = new DockerClient();
 
         public static void Main(string[] args)
         {
-            string result = client.GetDockerContainerIdAsync("dockertoolsperf").Result;
+            string result = client.GetContainerIdAsync("dockertoolsperf").Result;
         }
     }
 }
