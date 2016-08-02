@@ -62,12 +62,7 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProviderExtensions.cs" />
-    <Compile Include="Shared\DockerExtensions.cs" />
     <Compile Include="UnconfiguredProjectExtensions.cs" />
-    <Compile Include="Shared\CommandLineClient.cs" />
-    <Compile Include="Shared\CommandLineClientException.cs" />
-    <Compile Include="Shared\CommandLineClientResult.cs" />
-    <Compile Include="Shared\ICommandLineClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

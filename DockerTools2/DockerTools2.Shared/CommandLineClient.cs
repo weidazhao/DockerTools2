@@ -56,14 +56,10 @@ namespace DockerTools2.Shared
                 outputData.Append(e.Data);
             };
 
-            bool errorOccurred = false;
-
             var errorData = new StringBuilder();
 
             process.ErrorDataReceived += (sender, e) =>
             {
-                errorOccurred = true;
-
                 errorData.Append(e.Data);
             };
 
@@ -80,7 +76,7 @@ namespace DockerTools2.Shared
                 {
                     taskCompletionSource.TrySetCanceled();
                 }
-                else if (!errorOccurred && process.ExitCode == 0)
+                else if (process.ExitCode == 0)
                 {
                     taskCompletionSource.TrySetResult(new CommandLineClientResult() { Result = outputData.ToString() });
                 }
