@@ -5,23 +5,20 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DockerTools2.Shared
 {
-    public class DockerClient : IDockerClient
+    public class CommandLineClient : ICommandLineClient
     {
-        private static readonly string DockerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Docker\Docker\Resources\bin\docker.exe");
-
-        public Task<DockerClientResult> ExecuteAsync(string commandWithArguments, CancellationToken cancellationToken)
+        public Task<CommandLineClientResult> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken)
         {
             var startInfo = new ProcessStartInfo()
             {
-                FileName = DockerPath,
-                Arguments = commandWithArguments,
+                FileName = command,
+                Arguments = arguments,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -56,27 +53,21 @@ namespace DockerTools2.Shared
 
             process.OutputDataReceived += (sender, e) =>
             {
-                if (e.Data == null)
-                {
-                    return;
-                }
-
                 outputData.Append(e.Data);
             };
 
             bool errorOccurred = false;
 
+            var errorData = new StringBuilder();
+
             process.ErrorDataReceived += (sender, e) =>
             {
-                if (e.Data == null)
-                {
-                    return;
-                }
-
                 errorOccurred = true;
+
+                errorData.Append(e.Data);
             };
 
-            var taskCompletionSource = new TaskCompletionSource<DockerClientResult>();
+            var taskCompletionSource = new TaskCompletionSource<CommandLineClientResult>();
 
             process.Exited += (sender, e) =>
             {
@@ -91,11 +82,11 @@ namespace DockerTools2.Shared
                 }
                 else if (!errorOccurred && process.ExitCode == 0)
                 {
-                    taskCompletionSource.TrySetResult(new DockerClientResult() { Result = outputData.ToString() });
+                    taskCompletionSource.TrySetResult(new CommandLineClientResult() { Result = outputData.ToString() });
                 }
                 else
                 {
-                    taskCompletionSource.TrySetException(new DockerClientException());
+                    taskCompletionSource.TrySetException(new CommandLineClientException(errorData.ToString()));
                 }
 
                 process.Dispose();

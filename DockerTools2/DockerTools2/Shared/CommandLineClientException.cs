@@ -8,23 +8,23 @@ using System.Runtime.Serialization;
 namespace DockerTools2.Shared
 {
     [Serializable]
-    internal class DockerClientException : Exception
+    public class CommandLineClientException : Exception
     {
-        public DockerClientException()
+        public CommandLineClientException()
         {
         }
 
-        public DockerClientException(string message)
+        public CommandLineClientException(string message)
             : base(message)
         {
         }
 
-        public DockerClientException(string message, Exception inner)
+        public CommandLineClientException(string message, Exception inner)
             : base(message, inner)
         {
         }
 
-        protected DockerClientException(SerializationInfo info, StreamingContext context)
+        protected CommandLineClientException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
