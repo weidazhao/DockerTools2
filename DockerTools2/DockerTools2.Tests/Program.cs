@@ -12,7 +12,7 @@ namespace DockerTools2.Tests
 
         public static void Main(string[] args)
         {
-            string result = client.GetDockerContainerIdAsync("dockertoolsperf").Result.Result;
+            string result = client.GetDockerContainerIdAsync("dockertoolsperf").Result;
         }
     }
 }

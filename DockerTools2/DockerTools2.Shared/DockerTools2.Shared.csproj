@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="CommandLineClient.cs" />
     <Compile Include="CommandLineClientException.cs" />
-    <Compile Include="CommandLineClientResult.cs" />
     <Compile Include="DockerExtensions.cs" />
     <Compile Include="ICommandLineClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

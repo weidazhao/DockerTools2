@@ -9,6 +9,6 @@ namespace DockerTools2.Shared
 {
     public interface ICommandLineClient
     {
-        Task<CommandLineClientResult> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken);
+        Task<string> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken);
     }
 }

@@ -13,7 +13,7 @@ namespace DockerTools2.Shared
 {
     public class CommandLineClient : ICommandLineClient
     {
-        public Task<CommandLineClientResult> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken)
+        public Task<string> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken)
         {
             var startInfo = new ProcessStartInfo()
             {
@@ -63,7 +63,7 @@ namespace DockerTools2.Shared
                 errorData.Append(e.Data);
             };
 
-            var taskCompletionSource = new TaskCompletionSource<CommandLineClientResult>();
+            var taskCompletionSource = new TaskCompletionSource<string>();
 
             process.Exited += (sender, e) =>
             {
@@ -78,7 +78,7 @@ namespace DockerTools2.Shared
                 }
                 else if (process.ExitCode == 0)
                 {
-                    taskCompletionSource.TrySetResult(new CommandLineClientResult() { Result = outputData.ToString() });
+                    taskCompletionSource.TrySetResult(outputData.ToString());
                 }
                 else
                 {
