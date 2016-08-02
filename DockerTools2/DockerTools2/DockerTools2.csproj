@@ -53,15 +53,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Docker2DebugProfileLaunchTargetsProvider.cs" />
+    <Compile Include="Shared\DockerClientException.cs" />
+    <Compile Include="Shared\DockerClientResult.cs" />
     <Compile Include="DockerTools2Package.cs" />
     <Compile Include="DteProject.cs" />
     <Compile Include="DteUtilities.cs" />
     <Compile Include="Hierarchy.cs" />
     <Compile Include="HierarchyExtensions.cs" />
     <Compile Include="HierarchyItem.cs" />
+    <Compile Include="Shared\IDockerClient.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="Shared\DockerClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProviderExtensions.cs" />
+    <Compile Include="UnconfiguredProjectExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
