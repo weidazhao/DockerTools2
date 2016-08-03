@@ -17,27 +17,28 @@ namespace DockerTools2.Tests
 
         private static async Task RunAsync(string[] args)
         {
-            string workingDirectory = args.Length == 1 ? args[0] : @"C:\Repos\DockerToolsPerf\DockerToolsPerf\src\DockerToolsPerf";
+            string workingDirectory = args[0];
+
+            string command = args[1];
 
             var workspace = new Workspace(workingDirectory);
 
-            Console.WriteLine(await workspace.DockerClient.GetContainerIdAsync("dockertoolsperf"));
+            switch (command)
+            {
+                case "up":
+                    Console.WriteLine("Docker compose up started.");
+                    await workspace.DockerComposeClient.DevelopmentUpAsync();
+                    Console.WriteLine("Docker compose up completed.");
+                    break;
 
-            Console.WriteLine("Docker compose up started.");
-
-            await workspace.DockerComposeClient.DevelopmentUpAsync();
-
-            Console.WriteLine("Docker compose up completed.");
-
-            Console.Read();
-
-            Console.WriteLine("Docker compose down started.");
-
-            await workspace.DockerComposeClient.DevelopmentDownAsync();
-
-            Console.WriteLine("Docker compose down completed.");
-
-            Console.Read();
+                case "down":
+                    Console.WriteLine("Docker compose down started.");
+                    await workspace.DockerComposeClient.DevelopmentDownAsync();
+                    Console.WriteLine("Docker compose down completed.");
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
