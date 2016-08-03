@@ -50,6 +50,8 @@ namespace DockerTools2
 
             var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
+            var dcd = workspace.ParseDockerComposeDevelopmentFile();
+
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
 
             string settingsOptions = string.Format(CultureInfo.InvariantCulture,

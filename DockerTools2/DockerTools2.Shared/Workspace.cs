@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 using System.IO;
+using YamlDeserializer = YamlDotNet.Serialization.Deserializer;
 
 namespace DockerTools2.Shared
 {
@@ -32,5 +33,14 @@ namespace DockerTools2.Shared
         public string DockerComposeFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.yml");
 
         public string DockerComposeDevelopmentFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.dev.yml");
+
+        public object ParseDockerComposeDevelopmentFile()
+        {
+            using (var reader = new StreamReader(DockerComposeDevelopmentFilePath))
+            {
+                var deserializer = new YamlDeserializer();
+                return deserializer.Deserialize(reader);
+            }
+        }
     }
 }
