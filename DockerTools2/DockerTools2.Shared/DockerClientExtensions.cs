@@ -13,5 +13,10 @@ namespace DockerTools2.Shared
         {
             return client.ExecuteAsync(string.Empty, $"ps --filter \"name={containerName}\" --format {{{{.ID}}}} --last 1", cancellationToken);
         }
+
+        public static Task<string> ExecAsync(this IDockerClient client, string containerId, string command, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return client.ExecuteAsync(string.Empty, $"exec -i {containerId} {command}", cancellationToken);
+        }
     }
 }
