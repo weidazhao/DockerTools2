@@ -4,9 +4,10 @@ services:
   webapp:
     build:
       args:
-        source: obj/dummy-folder-for-docker-build
+        source: obj/empty-folder-for-docker-build
     labels:
-      - "microsoft.aspnetcore.developmentcontainer"
+      - "com.microsoft.development.program=dotnet"
+      - "com.microsoft.development.arguments=--additionalprobingpath /root/.nuget/packages bin/{Configuration}/{Framework}/WebApp.dll"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
