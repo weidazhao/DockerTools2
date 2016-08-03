@@ -2,7 +2,7 @@ version: '2'
 
 services:
   webapp:
-    image: username/webapp
+    image: weidazhao/webapp
     build:
       context: .
       dockerfile: Dockerfile

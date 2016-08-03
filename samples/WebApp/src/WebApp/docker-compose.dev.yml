@@ -1,15 +1,16 @@
 version: '2'
 
 services:
-  webapp: 
-    image: username/webapp:dev
+  webapp:
     build:
-      dockerfile: Dockerfile.dev
+      args:
+        source: obj/dummy-folder-for-docker-build
+    labels:
+      - "microsoft.aspnetcore.developmentcontainer"
     environment:
-      - APP_ASSEMBLY=${APP_ASSEMBLY}
-      - DOTNET_PACKAGES_CACHE=/dotnet_packages
-      - REMOTE_DEBUGGING=${REMOTE_DEBUGGING}
+      - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - .:/app
-      - ~/.nuget/packages:/dotnet_packages:ro
+      - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/clrdbg:/clrdbg:ro
+    entrypoint: tail -f /dev/null

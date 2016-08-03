@@ -8,6 +8,7 @@
     }
   },
   "profiles": {
+    "Docker2": {},
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
