@@ -25,7 +25,7 @@ namespace DockerTools2.Tests
 
             Console.WriteLine("Docker compose up started.");
 
-            await workspace.DockerComposeClient.UpAsync();
+            await workspace.DockerComposeClient.DevelopmentUpAsync();
 
             Console.WriteLine("Docker compose up completed.");
 
@@ -33,7 +33,7 @@ namespace DockerTools2.Tests
 
             Console.WriteLine("Docker compose down started.");
 
-            await workspace.DockerComposeClient.DownAsync();
+            await workspace.DockerComposeClient.DevelopmentDownAsync();
 
             Console.WriteLine("Docker compose down completed.");
 
