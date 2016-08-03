@@ -9,23 +9,14 @@ namespace DockerTools2.Shared
 {
     public static class DockerComposeClientExtensions
     {
-        #region Basic commands
-
-        public static Task<string> BuildAsync(this IDockerComposeClient client, string arguments, CancellationToken cancellationToken)
+        public static Task<string> DownAsync(this IDockerComposeClient client, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync("build", arguments, cancellationToken);
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.DockerComposeDevelopmentFilePath}", "down", cancellationToken);
         }
 
-        public static Task<string> DownAsync(this IDockerComposeClient client, string arguments, CancellationToken cancellationToken)
+        public static Task<string> UpAsync(this IDockerComposeClient client, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync("down", arguments, cancellationToken);
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.DockerComposeDevelopmentFilePath}", "up -d", cancellationToken);
         }
-
-        public static Task<string> UpAsync(this IDockerComposeClient client, string arguments, CancellationToken cancellationToken)
-        {
-            return client.ExecuteAsync("up", arguments, cancellationToken);
-        }
-
-        #endregion Basic commands
     }
 }

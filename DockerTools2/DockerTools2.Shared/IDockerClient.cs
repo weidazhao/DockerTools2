@@ -9,6 +9,8 @@ namespace DockerTools2.Shared
 {
     public interface IDockerClient
     {
-        Task<string> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken);
+        Workspace Workspace { get; }
+
+        Task<string> ExecuteAsync(string options, string commandWithOptions, CancellationToken cancellationToken);
     }
 }

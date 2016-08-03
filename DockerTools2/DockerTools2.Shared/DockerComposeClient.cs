@@ -11,18 +11,22 @@ namespace DockerTools2.Shared
 {
     public class DockerComposeClient : IDockerComposeClient
     {
+        private readonly Workspace _workspace;
         private readonly string _dockerComposePath;
         private readonly CommandLineClient _commandLineClient;
 
-        public DockerComposeClient()
+        public DockerComposeClient(Workspace workspace)
         {
+            _workspace = workspace;
             _dockerComposePath = Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"), @"Docker\Docker\Resources\bin\docker-compose.exe");
             _commandLineClient = new CommandLineClient();
         }
 
-        public Task<string> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken)
+        public Workspace Workspace => _workspace;
+
+        public Task<string> ExecuteAsync(string options, string commandWithOptions, CancellationToken cancellationToken)
         {
-            return _commandLineClient.ExecuteAsync(_dockerComposePath, command + " " + arguments, cancellationToken);
+            return _commandLineClient.ExecuteAsync(_dockerComposePath, options + " " + commandWithOptions, cancellationToken);
         }
     }
 }
