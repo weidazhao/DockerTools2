@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.ProjectSystem;
+﻿using DockerTools2.Shared;
+using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Debuggers;
 using Microsoft.VisualStudio.ProjectSystem.DotNet;
 using Microsoft.VisualStudio.ProjectSystem.Utilities;
@@ -8,8 +9,9 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
 
 namespace DockerTools2
 {
@@ -36,30 +38,37 @@ namespace DockerTools2
         {
             const string MIDebugEngineGuid = "{EA6637C6-17DF-45B5-A183-0951C54243BC}";
 
-            //            const string SettingsOptionsTemplate =
-            //@"<PipeLaunchOptions xmlns=""http://schemas.microsoft.com/vstudio/MDDDebuggerOptions/2014""
-            //    PipePath = ""{0}""
-            //    PipeArguments = ""{1}""
-            //    ExePath = ""{2}""
-            //    ExeArguments = ""{3}""
-            //    TargetArchitecture ""{4}""
-            //    MIMode = ""{5}"">
-            //  </PipeLaunchOptions>
-            //";
+            const string SettingsOptionsTemplate =
+@"<PipeLaunchOptions
+    xmlns=""http://schemas.microsoft.com/vstudio/MDDDebuggerOptions/2014""
+    PipePath = ""{0}""
+    PipeArguments = ""{1}""
+    ExePath = ""{2}""
+    ExeArguments = ""{3}""
+    TargetArchitecture = ""{4}""
+    MIMode = ""{5}"" />";
 
+            var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
-            //string settingsOptions = string.Format(CultureInfo.InvariantCulture, 
-            //                                       SettingsOptionsTemplate,
-            //                                       )
+            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
+
+            string settingsOptions = string.Format(CultureInfo.InvariantCulture,
+                                                   SettingsOptionsTemplate,
+                                                   "docker",
+                                                   $"exec -i {containerId} /clrdbg/clrdbg --interpreter=mi",
+                                                   "dotnet",
+                                                   $"--additionalprobingpath /root/.nuget/packages bin/Debug/netcoreapp1.0/{workspace.WorkspaceName}.dll",
+                                                   "x64",
+                                                   "clrdbg");
 
             var settings = new DebugLaunchSettings(launchOptions);
             settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
-            settings.Options = null;
+            settings.Executable = "dotnet";
+            settings.Options = settingsOptions;
             settings.SendToOutputWindow = true;
             settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;
+            settings.CurrentDirectory = "/app";
             settings.LaunchDebugEngineGuid = new Guid(MIDebugEngineGuid);
-
-            await Task.Yield();
 
             return new List<IDebugLaunchSettings>() { settings };
         }

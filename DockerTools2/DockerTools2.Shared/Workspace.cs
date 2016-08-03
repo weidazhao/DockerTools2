@@ -8,13 +8,13 @@ namespace DockerTools2.Shared
 {
     public class Workspace
     {
-        private readonly string _workingDirectory;
+        private readonly DirectoryInfo _workspaceDirectory;
         private readonly IDockerClient _dockerClient;
         private readonly IDockerComposeClient _dockerComposeClient;
 
-        public Workspace(string workingDirectory)
+        public Workspace(string workspaceDirectory)
         {
-            _workingDirectory = Path.GetFullPath(workingDirectory);
+            _workspaceDirectory = new DirectoryInfo(workspaceDirectory);
             _dockerClient = new DockerClient(this);
             _dockerComposeClient = new DockerComposeClient(this);
         }
@@ -23,10 +23,14 @@ namespace DockerTools2.Shared
 
         public IDockerComposeClient DockerComposeClient => _dockerComposeClient;
 
-        public string DockerFilePath => Path.Combine(_workingDirectory, "Dockerfile");
+        public string WorkspaceName => _workspaceDirectory.Name;
 
-        public string DockerComposeFilePath => Path.Combine(_workingDirectory, "docker-compose.yml");
+        public string WorkspaceDirectory => _workspaceDirectory.FullName;
 
-        public string DockerComposeDevelopmentFilePath => Path.Combine(_workingDirectory, "docker-compose.dev.yml");
+        public string DockerFilePath => Path.Combine(WorkspaceDirectory, "Dockerfile");
+
+        public string DockerComposeFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.yml");
+
+        public string DockerComposeDevelopmentFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.dev.yml");
     }
 }
