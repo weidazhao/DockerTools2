@@ -16,6 +16,7 @@ services:
       - "com.microsoft.visualstudio.debugger.mimode=clrdbg"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
     volumes:
       - .:/app
       - ~/.nuget/packages:/root/.nuget/packages:ro
