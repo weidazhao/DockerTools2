@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DockerTools2
@@ -50,7 +51,11 @@ namespace DockerTools2
 
             var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
-            var dcd = workspace.ParseDockerComposeDevelopmentFile();
+            var launchSettings = workspace.ParseLaunchSettings();
+
+            EnsureEmptyDirectoryExists(Path.Combine(workspace.WorkspaceDirectory, launchSettings.EmptyFolderForDockerBuild));
+
+            await workspace.DockerComposeClient.DevelopmentUpAsync();
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
 
@@ -58,14 +63,14 @@ namespace DockerTools2
                                                    SettingsOptionsTemplate,
                                                    "docker",
                                                    $"exec -i {containerId} /clrdbg/clrdbg --interpreter=mi",
-                                                   "dotnet",
-                                                   $"--additionalprobingpath /root/.nuget/packages bin/Debug/netcoreapp1.0/{workspace.WorkspaceName}.dll",
+                                                   launchSettings.StartProgram,
+                                                   launchSettings.StartArguments.Replace("{Configuration}", "Debug").Replace("{Framework}", "netcoreapp1.0"),
                                                    "x64",
                                                    "clrdbg");
 
             var settings = new DebugLaunchSettings(launchOptions);
             settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
-            settings.Executable = "dotnet";
+            settings.Executable = launchSettings.StartProgram;
             settings.Options = settingsOptions;
             settings.SendToOutputWindow = true;
             settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;
@@ -78,6 +83,28 @@ namespace DockerTools2
         public bool SupportsProfile(IDebugProfile profile)
         {
             return StringComparer.Ordinal.Equals(profile.Name, "Docker2");
+        }
+
+        private void EnsureEmptyDirectoryExists(string directory)
+        {
+            try
+            {
+                if (Directory.Exists(directory))
+                {
+                    if (Directory.EnumerateFileSystemEntries(directory).Any())
+                    {
+                        Directory.Delete(directory, recursive: true);
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(directory);
+                }
+            }
+            catch
+            {
+                // Do nothing for now.
+            }
         }
     }
 }

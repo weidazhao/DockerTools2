@@ -34,12 +34,14 @@ namespace DockerTools2.Shared
 
         public string DockerComposeDevelopmentFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.dev.yml");
 
-        public object ParseDockerComposeDevelopmentFile()
+        public LaunchSettings ParseLaunchSettings()
         {
             using (var reader = new StreamReader(DockerComposeDevelopmentFilePath))
             {
-                var deserializer = new YamlDeserializer();
-                return deserializer.Deserialize(reader);
+                var deserializer = new YamlDeserializer(null, null, true);
+                var document = deserializer.Deserialize<DockerComposeDevelopmentDocument>(reader);
+
+                return LaunchSettings.FromDockerComposeDevelopmentDocument(WorkspaceName.ToLowerInvariant(), document);
             }
         }
     }
