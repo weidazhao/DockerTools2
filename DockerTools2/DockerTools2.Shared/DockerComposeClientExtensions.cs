@@ -11,7 +11,7 @@ namespace DockerTools2.Shared
     {
         public static Task<string> DevelopmentDownAsync(this IDockerComposeClient client, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.DockerComposeDevelopmentFilePath}", "down", cancellationToken);
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.DockerComposeDevelopmentFilePath}", "down --rmi local --remove-orphans", cancellationToken);
         }
 
         public static Task<string> DevelopmentUpAsync(this IDockerComposeClient client, CancellationToken cancellationToken = default(CancellationToken))
