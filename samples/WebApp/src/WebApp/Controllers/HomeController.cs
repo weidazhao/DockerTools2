@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 namespace WebApp.Controllers
 {
@@ -11,7 +12,7 @@ namespace WebApp.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = RuntimeInformation.OSDescription;
 
             return View();
         }
