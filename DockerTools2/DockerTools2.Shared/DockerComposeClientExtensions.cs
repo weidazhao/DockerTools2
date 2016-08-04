@@ -17,7 +17,7 @@ namespace DockerTools2.Shared
                 commandWithOptions += " --no-build";
             }
 
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevelopmentFilePath(mode)}", commandWithOptions, cancellationToken);
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}", commandWithOptions, cancellationToken);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace DockerTools2.Shared
 
         public string DockerComposeFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.yml");
 
-        public string GetDockerComposeDevelopmentFilePath(DockerDevelopmentMode mode)
+        public string GetDockerComposeDevFilePath(DockerDevelopmentMode mode)
         {
             string dockerComposeDevFilePath;
 
@@ -54,19 +54,19 @@ namespace DockerTools2.Shared
 
         public LaunchSettings ParseLaunchSettings(DockerDevelopmentMode mode)
         {
-            string dockerComposeDevelopmentFilePath = GetDockerComposeDevelopmentFilePath(mode);
+            string dockerComposeDevFilePath = GetDockerComposeDevFilePath(mode);
 
-            if (dockerComposeDevelopmentFilePath == null)
+            if (dockerComposeDevFilePath == null)
             {
                 return null;
             }
 
-            using (var reader = new StreamReader(dockerComposeDevelopmentFilePath))
+            using (var reader = new StreamReader(dockerComposeDevFilePath))
             {
                 var deserializer = new YamlDeserializer(null, null, true);
-                var document = deserializer.Deserialize<DockerComposeDevelopmentDocument>(reader);
+                var document = deserializer.Deserialize<DockerComposeDocument>(reader);
 
-                return LaunchSettings.FromDockerComposeDevelopmentDocument(WorkspaceName.ToLowerInvariant(), document);
+                return LaunchSettings.FromDockerComposeDocument(WorkspaceName.ToLowerInvariant(), document);
             }
         }
     }

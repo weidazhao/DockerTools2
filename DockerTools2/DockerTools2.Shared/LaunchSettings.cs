@@ -25,7 +25,7 @@ namespace DockerTools2.Shared
 
         public string EmptyFolderForDockerBuild { get; set; }
 
-        public static LaunchSettings FromDockerComposeDevelopmentDocument(string serviceName, DockerComposeDevelopmentDocument document)
+        public static LaunchSettings FromDockerComposeDocument(string serviceName, DockerComposeDocument document)
         {
             DockerComposeService service;
             if (!document.Services.TryGetValue(serviceName, out service))

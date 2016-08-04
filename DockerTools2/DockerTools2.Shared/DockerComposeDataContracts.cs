@@ -7,7 +7,7 @@ using YamlDotNet.Serialization;
 
 namespace DockerTools2.Shared
 {
-    public class DockerComposeDevelopmentDocument
+    public class DockerComposeDocument
     {
         [YamlMember(Alias = "version")]
         public string Version { get; set; }
