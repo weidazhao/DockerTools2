@@ -8,7 +8,10 @@
     }
   },
   "profiles": {
-    "Docker2": {},
+    "Docker2": {
+      "launchBrowser": true,
+      "launchUrl": "http://localhost"
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
