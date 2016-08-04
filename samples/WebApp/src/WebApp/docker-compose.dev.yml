@@ -5,7 +5,9 @@ services:
     build:
       args:
         source: obj/empty-folder-for-docker-build
+    working_dir: /app
     labels:
+      - "com.microsoft.development.debuggerdirectory=/clrdbg"
       - "com.microsoft.development.program=dotnet"
       - "com.microsoft.development.arguments=--additionalprobingpath /root/.nuget/packages bin/{Configuration}/{Framework}/WebApp.dll"
     environment:

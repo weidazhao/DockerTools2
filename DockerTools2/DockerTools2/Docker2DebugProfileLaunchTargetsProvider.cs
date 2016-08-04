@@ -59,12 +59,14 @@ namespace DockerTools2
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
 
+            string configuration = ConfiguredProject.ProjectConfiguration.Dimensions["Configuration"];
+
             string settingsOptions = string.Format(CultureInfo.InvariantCulture,
                                                    SettingsOptionsTemplate,
                                                    "docker",
-                                                   $"exec -i {containerId} /clrdbg/clrdbg --interpreter=mi",
+                                                   $"exec -i {containerId} {launchSettings.DebuggerDirectory}/clrdbg --interpreter=mi",
                                                    launchSettings.StartProgram,
-                                                   launchSettings.StartArguments.Replace("{Configuration}", "Debug").Replace("{Framework}", "netcoreapp1.0"),
+                                                   launchSettings.StartArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0"),
                                                    "x64",
                                                    "clrdbg");
 
@@ -74,7 +76,7 @@ namespace DockerTools2
             settings.Options = settingsOptions;
             settings.SendToOutputWindow = true;
             settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;
-            settings.CurrentDirectory = "/app";
+            settings.CurrentDirectory = launchSettings.WorkingDirectory;
             settings.LaunchDebugEngineGuid = new Guid(MIDebugEngineGuid);
 
             return new List<IDebugLaunchSettings>() { settings };

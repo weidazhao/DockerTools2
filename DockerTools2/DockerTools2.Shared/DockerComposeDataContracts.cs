@@ -23,6 +23,9 @@ namespace DockerTools2.Shared
 
         [YamlMember(Alias = "labels")]
         public List<string> Labels { get; set; }
+
+        [YamlMember(Alias = "working_dir")]
+        public string WorkingDirectory { get; set; }
     }
 
     public class DockerComposeBuild

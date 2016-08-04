@@ -9,16 +9,26 @@ namespace DockerTools2.Shared
 {
     public class LaunchSettings
     {
+        public string WorkingDirectory { get; set; }
+
         public string EmptyFolderForDockerBuild { get; set; }
 
         public string StartProgram { get; set; }
 
         public string StartArguments { get; set; }
 
+        public string DebuggerDirectory { get; set; }
+
         public static LaunchSettings FromDockerComposeDevelopmentDocument(string serviceName, DockerComposeDevelopmentDocument document)
         {
             DockerComposeService service;
             if (!document.Services.TryGetValue(serviceName, out service))
+            {
+                return null;
+            }
+
+            string workingDirectory = service?.WorkingDirectory;
+            if (string.IsNullOrEmpty(workingDirectory))
             {
                 return null;
             }
@@ -57,7 +67,22 @@ namespace DockerTools2.Shared
                 return null;
             }
 
-            return new LaunchSettings() { EmptyFolderForDockerBuild = emptyFolder, StartProgram = program, StartArguments = arguments };
+            string debuggerDirectory = labels.Select(p => ExtractValueFromLabel(p, "com.microsoft.development.debuggerdirectory"))
+                                             .FirstOrDefault(p => !string.IsNullOrEmpty(p));
+
+            if (string.IsNullOrEmpty(debuggerDirectory))
+            {
+                return null;
+            }
+
+            return new LaunchSettings()
+            {
+                WorkingDirectory = workingDirectory,
+                EmptyFolderForDockerBuild = emptyFolder,
+                StartProgram = program,
+                StartArguments = arguments,
+                DebuggerDirectory = debuggerDirectory
+            };
         }
 
         private static string ExtractValueFromLabel(string labelWithValue, string label)
