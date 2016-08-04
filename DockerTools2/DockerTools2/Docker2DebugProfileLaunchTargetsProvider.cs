@@ -53,15 +53,7 @@ namespace DockerTools2
     MIMode = ""{5}"" />";
 
             DockerDevelopmentMode mode;
-            if (StringComparer.Ordinal.Equals(profile.Name, FastMode))
-            {
-                mode = DockerDevelopmentMode.Fast;
-            }
-            else if (StringComparer.Ordinal.Equals(profile.Name, RegularMode))
-            {
-                mode = DockerDevelopmentMode.Regular;
-            }
-            else
+            if (!TryParseDockerDevelopmentMode(profile.Name, out mode))
             {
                 throw new InvalidOperationException("The given profile is not supported");
             }
@@ -104,8 +96,26 @@ namespace DockerTools2
 
         public bool SupportsProfile(IDebugProfile profile)
         {
-            return StringComparer.Ordinal.Equals(profile.Name, FastMode) ||
-                   StringComparer.Ordinal.Equals(profile.Name, RegularMode);
+            DockerDevelopmentMode mode;
+            return TryParseDockerDevelopmentMode(profile.Name, out mode);
+        }
+
+        private bool TryParseDockerDevelopmentMode(string value, out DockerDevelopmentMode mode)
+        {
+            mode = DockerDevelopmentMode.Regular;
+
+            if (StringComparer.Ordinal.Equals(value, FastMode))
+            {
+                mode = DockerDevelopmentMode.Fast;
+                return true;
+            }
+            else if (StringComparer.Ordinal.Equals(value, RegularMode))
+            {
+                mode = DockerDevelopmentMode.Regular;
+                return true;
+            }
+
+            return false;
         }
 
         private void EnsureEmptyDirectoryExists(string directory)
