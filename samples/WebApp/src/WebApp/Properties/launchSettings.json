@@ -8,7 +8,11 @@
     }
   },
   "profiles": {
-    "Docker2": {
+    "Docker Fast": {
+      "launchBrowser": true,
+      "launchUrl": "http://localhost"
+    },
+    "Docker Regular": {
       "launchBrowser": true,
       "launchUrl": "http://localhost"
     },

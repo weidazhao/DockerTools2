@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="SetDockerProps" BeforeTargets="Build">
+    <PropertyGroup>
+      <DockerFastMode Condition=" '$(DockerFastMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Fast')">True</DockerFastMode>
+      <DockerRegularMode Condition=" '$(DockerRegularMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Regular')">True</DockerRegularMode>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(DockerFastMode)' == 'True'">
+      <DockerWorkingDirectory>$(MSBuildProjectDirectory)</DockerWorkingDirectory>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(DockerRegularMode)' == 'True'">
+      <DockerWorkingDirectory>$(PublishOutputPath)</DockerWorkingDirectory>
+      <DeployOnBuild>True</DeployOnBuild>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="DockerComposeBuild" AfterTargets="WebPublish" Condition="'$(DockerRegularMode)'=='True' And '$(DeployOnBuild)'=='True'">
+    <Exec
+      WorkingDirectory="$(DockerWorkingDirectory)"
+      Command="docker-compose build --no-cache" />
+  </Target>
+</Project>

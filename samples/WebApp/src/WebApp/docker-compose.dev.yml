@@ -2,6 +2,7 @@ version: '2'
 
 services:
   webapp:
+    image: weidazhao/webapp:dev
     build:
       args:
         source: obj/empty-folder-for-docker-build

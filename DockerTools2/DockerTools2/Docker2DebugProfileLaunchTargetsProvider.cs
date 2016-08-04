@@ -84,7 +84,7 @@ namespace DockerTools2
 
         public bool SupportsProfile(IDebugProfile profile)
         {
-            return StringComparer.Ordinal.Equals(profile.Name, "Docker2");
+            return StringComparer.Ordinal.Equals(profile.Name, "Docker Fast");
         }
 
         private void EnsureEmptyDirectoryExists(string directory)
