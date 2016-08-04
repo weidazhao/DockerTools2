@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace DockerTools2.Shared
 {
@@ -13,11 +13,17 @@ namespace DockerTools2.Shared
 
         public string EmptyFolderForDockerBuild { get; set; }
 
-        public string StartProgram { get; set; }
+        public string DebuggerProgram { get; set; }
 
-        public string StartArguments { get; set; }
+        public string DebuggerArguments { get; set; }
 
-        public string DebuggerDirectory { get; set; }
+        public string DebuggerTargetArchitecture { get; set; }
+
+        public string DebuggerMIMode { get; set; }
+
+        public string Program { get; set; }
+
+        public string Arguments { get; set; }
 
         public static LaunchSettings FromDockerComposeDevelopmentDocument(string serviceName, DockerComposeDevelopmentDocument document)
         {
@@ -39,8 +45,8 @@ namespace DockerTools2.Shared
                 return null;
             }
 
-            string emptyFolder;
-            if (!buildArgs.TryGetValue("source", out emptyFolder))
+            string emptyFolderForDockerBuild;
+            if (!buildArgs.TryGetValue("source", out emptyFolderForDockerBuild))
             {
                 return null;
             }
@@ -51,26 +57,38 @@ namespace DockerTools2.Shared
                 return null;
             }
 
-            string program = labels.Select(p => ExtractValueFromLabel(p, "com.microsoft.development.program"))
-                                   .FirstOrDefault(p => !string.IsNullOrEmpty(p));
-
-            if (string.IsNullOrEmpty(program))
+            string debuggerProgram;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debugger.program", out debuggerProgram))
             {
                 return null;
             }
 
-            string arguments = labels.Select(p => ExtractValueFromLabel(p, "com.microsoft.development.arguments"))
-                                     .FirstOrDefault(p => !string.IsNullOrEmpty(p));
-
-            if (string.IsNullOrEmpty(arguments))
+            string debuggerArguments;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debugger.arguments", out debuggerArguments))
             {
                 return null;
             }
 
-            string debuggerDirectory = labels.Select(p => ExtractValueFromLabel(p, "com.microsoft.development.debuggerdirectory"))
-                                             .FirstOrDefault(p => !string.IsNullOrEmpty(p));
+            string debuggerTargetArchitecture;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debugger.targetarchitecture", out debuggerTargetArchitecture))
+            {
+                return null;
+            }
 
-            if (string.IsNullOrEmpty(debuggerDirectory))
+            string debuggerMIMode;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debugger.mimode", out debuggerMIMode))
+            {
+                return null;
+            }
+
+            string program;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.program", out program))
+            {
+                return null;
+            }
+
+            string arguments;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.arguments", out arguments))
             {
                 return null;
             }
@@ -78,21 +96,30 @@ namespace DockerTools2.Shared
             return new LaunchSettings()
             {
                 WorkingDirectory = workingDirectory,
-                EmptyFolderForDockerBuild = emptyFolder,
-                StartProgram = program,
-                StartArguments = arguments,
-                DebuggerDirectory = debuggerDirectory
+                EmptyFolderForDockerBuild = emptyFolderForDockerBuild,
+                DebuggerProgram = debuggerProgram,
+                DebuggerArguments = debuggerArguments,
+                DebuggerTargetArchitecture = debuggerTargetArchitecture,
+                DebuggerMIMode = debuggerMIMode,
+                Program = program,
+                Arguments = arguments
             };
         }
 
-        private static string ExtractValueFromLabel(string labelWithValue, string label)
+        private static bool TryGetValue(IEnumerable<string> labels, string labelName, out string labelValue)
         {
-            if (labelWithValue.StartsWith(label, StringComparison.Ordinal))
+            labelValue = null;
+
+            foreach (string label in labels)
             {
-                return labelWithValue.Substring(labelWithValue.IndexOf("=") + 1).Trim();
+                if (label.StartsWith(labelName + "=", StringComparison.Ordinal))
+                {
+                    labelValue = label.Substring(labelName.Length + 1);
+                    return true;
+                }
             }
 
-            return null;
+            return false;
         }
     }
 }

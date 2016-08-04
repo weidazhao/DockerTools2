@@ -64,15 +64,15 @@ namespace DockerTools2
             string settingsOptions = string.Format(CultureInfo.InvariantCulture,
                                                    SettingsOptionsTemplate,
                                                    "docker",
-                                                   $"exec -i {containerId} {launchSettings.DebuggerDirectory}/clrdbg --interpreter=mi",
-                                                   launchSettings.StartProgram,
-                                                   launchSettings.StartArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0"),
-                                                   "x64",
-                                                   "clrdbg");
+                                                   $"exec -i {containerId} {launchSettings.DebuggerProgram} {launchSettings.DebuggerArguments}",
+                                                   launchSettings.Program,
+                                                   launchSettings.Arguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0"),
+                                                   launchSettings.DebuggerTargetArchitecture,
+                                                   launchSettings.DebuggerMIMode);
 
             var settings = new DebugLaunchSettings(launchOptions);
             settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
-            settings.Executable = launchSettings.StartProgram;
+            settings.Executable = launchSettings.Program;
             settings.Options = settingsOptions;
             settings.SendToOutputWindow = true;
             settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;

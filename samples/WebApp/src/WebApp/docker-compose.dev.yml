@@ -7,9 +7,12 @@ services:
         source: obj/empty-folder-for-docker-build
     working_dir: /app
     labels:
-      - "com.microsoft.development.debuggerdirectory=/clrdbg"
-      - "com.microsoft.development.program=dotnet"
-      - "com.microsoft.development.arguments=--additionalprobingpath /root/.nuget/packages bin/{Configuration}/{Framework}/WebApp.dll"
+      - "com.microsoft.visualstudio.debugger.program=/clrdbg/clrdbg"
+      - "com.microsoft.visualstudio.debugger.arguments=--interpreter=mi"
+      - "com.microsoft.visualstudio.debugger.targetarchitecture=x64"
+      - "com.microsoft.visualstudio.debugger.mimode=clrdbg"
+      - "com.microsoft.visualstudio.program=dotnet"
+      - "com.microsoft.visualstudio.arguments=--additionalprobingpath /root/.nuget/packages bin/{Configuration}/{Framework}/WebApp.dll"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
