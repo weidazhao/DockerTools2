@@ -21,6 +21,9 @@ namespace DockerTools2
     [OrderPrecedence(1000)]
     public class Docker2DebugProfileLaunchTargetsProvider : IDebugProfileLaunchTargetsProvider
     {
+        private const string FastMode = "Docker Fast";
+        private const string RegularMode = "Docker Regular";
+
         [Import(typeof(SVsServiceProvider))]
         private IServiceProvider ServiceProvider { get; set; }
 
@@ -49,13 +52,30 @@ namespace DockerTools2
     TargetArchitecture = ""{4}""
     MIMode = ""{5}"" />";
 
+            DockerDevelopmentMode mode;
+            if (StringComparer.Ordinal.Equals(profile.Name, FastMode))
+            {
+                mode = DockerDevelopmentMode.Fast;
+            }
+            else if (StringComparer.Ordinal.Equals(profile.Name, RegularMode))
+            {
+                mode = DockerDevelopmentMode.Regular;
+            }
+            else
+            {
+                throw new InvalidOperationException("The given profile is not supported");
+            }
+
             var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
-            var launchSettings = workspace.ParseLaunchSettings();
+            var launchSettings = workspace.ParseLaunchSettings(mode);
 
-            EnsureEmptyDirectoryExists(Path.Combine(workspace.WorkspaceDirectory, launchSettings.EmptyFolderForDockerBuild));
+            if (!string.IsNullOrEmpty(launchSettings.EmptyFolderForDockerBuild))
+            {
+                EnsureEmptyDirectoryExists(Path.Combine(workspace.WorkspaceDirectory, launchSettings.EmptyFolderForDockerBuild));
+            }
 
-            await workspace.DockerComposeClient.DevelopmentUpAsync();
+            await workspace.DockerComposeClient.DevelopmentUpAsync(mode);
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
 
@@ -65,18 +85,18 @@ namespace DockerTools2
                                                    SettingsOptionsTemplate,
                                                    "docker",
                                                    $"exec -i {containerId} {launchSettings.DebuggerProgram} {launchSettings.DebuggerArguments}",
-                                                   launchSettings.Program,
-                                                   launchSettings.Arguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0"),
+                                                   launchSettings.DebuggeeProgram,
+                                                   launchSettings.DebuggeeArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0"),
                                                    launchSettings.DebuggerTargetArchitecture,
                                                    launchSettings.DebuggerMIMode);
 
             var settings = new DebugLaunchSettings(launchOptions);
             settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
-            settings.Executable = launchSettings.Program;
+            settings.Executable = launchSettings.DebuggeeProgram;
             settings.Options = settingsOptions;
             settings.SendToOutputWindow = true;
             settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;
-            settings.CurrentDirectory = launchSettings.WorkingDirectory;
+            settings.CurrentDirectory = launchSettings.DebuggeeWorkingDirectory;
             settings.LaunchDebugEngineGuid = new Guid(MIDebugEngineGuid);
 
             return new List<IDebugLaunchSettings>() { settings };
@@ -84,7 +104,8 @@ namespace DockerTools2
 
         public bool SupportsProfile(IDebugProfile profile)
         {
-            return StringComparer.Ordinal.Equals(profile.Name, "Docker Fast");
+            return StringComparer.Ordinal.Equals(profile.Name, FastMode) ||
+                   StringComparer.Ordinal.Equals(profile.Name, RegularMode);
         }
 
         private void EnsureEmptyDirectoryExists(string directory)

@@ -32,11 +32,36 @@ namespace DockerTools2.Shared
 
         public string DockerComposeFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.yml");
 
-        public string DockerComposeDevelopmentFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.dev.yml");
-
-        public LaunchSettings ParseLaunchSettings()
+        public string GetDockerComposeDevelopmentFilePath(DockerDevelopmentMode mode)
         {
-            using (var reader = new StreamReader(DockerComposeDevelopmentFilePath))
+            string dockerComposeDevFilePath;
+
+            switch (mode)
+            {
+                case DockerDevelopmentMode.Fast:
+                    dockerComposeDevFilePath = Path.Combine(WorkspaceDirectory, "docker-compose.dev.fast.yml");
+                    break;
+                case DockerDevelopmentMode.Regular:
+                    dockerComposeDevFilePath = Path.Combine(WorkspaceDirectory, "docker-compose.dev.regular.yml");
+                    break;
+                default:
+                    dockerComposeDevFilePath = null;
+                    break;
+            }
+
+            return dockerComposeDevFilePath;
+        }
+
+        public LaunchSettings ParseLaunchSettings(DockerDevelopmentMode mode)
+        {
+            string dockerComposeDevelopmentFilePath = GetDockerComposeDevelopmentFilePath(mode);
+
+            if (dockerComposeDevelopmentFilePath == null)
+            {
+                return null;
+            }
+
+            using (var reader = new StreamReader(dockerComposeDevelopmentFilePath))
             {
                 var deserializer = new YamlDeserializer(null, null, true);
                 var document = deserializer.Deserialize<DockerComposeDevelopmentDocument>(reader);

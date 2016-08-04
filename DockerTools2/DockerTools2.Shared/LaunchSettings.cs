@@ -9,9 +9,11 @@ namespace DockerTools2.Shared
 {
     public class LaunchSettings
     {
-        public string WorkingDirectory { get; set; }
+        public string DebuggeeProgram { get; set; }
 
-        public string EmptyFolderForDockerBuild { get; set; }
+        public string DebuggeeArguments { get; set; }
+
+        public string DebuggeeWorkingDirectory { get; set; }
 
         public string DebuggerProgram { get; set; }
 
@@ -21,9 +23,7 @@ namespace DockerTools2.Shared
 
         public string DebuggerMIMode { get; set; }
 
-        public string Program { get; set; }
-
-        public string Arguments { get; set; }
+        public string EmptyFolderForDockerBuild { get; set; }
 
         public static LaunchSettings FromDockerComposeDevelopmentDocument(string serviceName, DockerComposeDevelopmentDocument document)
         {
@@ -33,26 +33,26 @@ namespace DockerTools2.Shared
                 return null;
             }
 
-            string workingDirectory = service?.WorkingDirectory;
-            if (string.IsNullOrEmpty(workingDirectory))
-            {
-                return null;
-            }
-
-            var buildArgs = service?.Build?.Args;
-            if (buildArgs == null)
-            {
-                return null;
-            }
-
-            string emptyFolderForDockerBuild;
-            if (!buildArgs.TryGetValue("source", out emptyFolderForDockerBuild))
-            {
-                return null;
-            }
-
             var labels = service?.Labels;
             if (labels == null)
+            {
+                return null;
+            }
+
+            string debuggeeProgram;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.program", out debuggeeProgram))
+            {
+                return null;
+            }
+
+            string debuggeeArguments;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.arguments", out debuggeeArguments))
+            {
+                return null;
+            }
+
+            string debuggeeWorkingDirectory;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.workingdirectory", out debuggeeWorkingDirectory))
             {
                 return null;
             }
@@ -81,28 +81,24 @@ namespace DockerTools2.Shared
                 return null;
             }
 
-            string program;
-            if (!TryGetValue(labels, "com.microsoft.visualstudio.program", out program))
-            {
-                return null;
-            }
+            string emptyFolderForDockerBuild = null;
 
-            string arguments;
-            if (!TryGetValue(labels, "com.microsoft.visualstudio.arguments", out arguments))
+            var buildArgs = service?.Build?.Args;
+            if (buildArgs != null)
             {
-                return null;
+                buildArgs.TryGetValue("source", out emptyFolderForDockerBuild);
             }
 
             return new LaunchSettings()
             {
-                WorkingDirectory = workingDirectory,
-                EmptyFolderForDockerBuild = emptyFolderForDockerBuild,
+                DebuggeeProgram = debuggeeProgram,
+                DebuggeeArguments = debuggeeArguments,
+                DebuggeeWorkingDirectory = debuggeeWorkingDirectory,
                 DebuggerProgram = debuggerProgram,
                 DebuggerArguments = debuggerArguments,
                 DebuggerTargetArchitecture = debuggerTargetArchitecture,
                 DebuggerMIMode = debuggerMIMode,
-                Program = program,
-                Arguments = arguments
+                EmptyFolderForDockerBuild = emptyFolderForDockerBuild
             };
         }
 

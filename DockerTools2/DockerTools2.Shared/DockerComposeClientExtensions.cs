@@ -9,14 +9,15 @@ namespace DockerTools2.Shared
 {
     public static class DockerComposeClientExtensions
     {
-        public static Task<string> DevelopmentDownAsync(this IDockerComposeClient client, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task<string> DevelopmentUpAsync(this IDockerComposeClient client, DockerDevelopmentMode mode, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.DockerComposeDevelopmentFilePath}", "down --rmi local --remove-orphans", cancellationToken);
-        }
+            string commandWithOptions = "up -d";
+            if (mode == DockerDevelopmentMode.Regular)
+            {
+                commandWithOptions += " --no-build";
+            }
 
-        public static Task<string> DevelopmentUpAsync(this IDockerComposeClient client, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.DockerComposeDevelopmentFilePath}", "up -d", cancellationToken);
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevelopmentFilePath(mode)}", commandWithOptions, cancellationToken);
         }
     }
 }

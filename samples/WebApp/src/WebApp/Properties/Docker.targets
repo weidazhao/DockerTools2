@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="SetDockerProps" BeforeTargets="Build">
+  <Target Name="SetDockerProps" BeforeTargets="Build;Clean">
     <PropertyGroup>
       <DockerFastMode Condition=" '$(DockerFastMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Fast')">True</DockerFastMode>
       <DockerRegularMode Condition=" '$(DockerRegularMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Regular')">True</DockerRegularMode>
@@ -18,8 +18,16 @@
   </Target>
 
   <Target Name="DockerComposeBuild" AfterTargets="WebPublish" Condition="'$(DockerRegularMode)'=='True' And '$(DeployOnBuild)'=='True'">
-    <Exec
-      WorkingDirectory="$(DockerWorkingDirectory)"
-      Command="docker-compose build --no-cache" />
+    <Exec WorkingDirectory="$(DockerWorkingDirectory)" Command="docker-compose build --no-cache" />
+  </Target>
+
+  <Target Name="DockerComposeDown" AfterTargets="Clean" Condition="'$(DockerFastMode)'=='True' Or '$(DockerRegularMode)'=='True'">
+    <PropertyGroup Condition="'$(DockerFastMode)'=='True'">
+      <DockerComposeDownCommand>docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml down --rmi all --remove-orphans</DockerComposeDownCommand>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(DockerRegularMode)'=='True'">
+      <DockerComposeDownCommand>docker-compose down --rmi all --remove-orphans</DockerComposeDownCommand>
+    </PropertyGroup>
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(DockerComposeDownCommand)" ContinueOnError="True" />
   </Target>
 </Project>
