@@ -143,17 +143,17 @@ namespace DockerTools2
 
             public void LogError(string error)
             {
-                _pane.OutputStringThreadSafe(error);
+                _pane.OutputStringThreadSafe(error + Environment.NewLine);
             }
 
             public void LogMessage(string message)
             {
-                _pane.OutputStringThreadSafe(message);
+                _pane.OutputStringThreadSafe(message + Environment.NewLine);
             }
 
             public void LogWarning(string warning)
             {
-                _pane.OutputStringThreadSafe(warning);
+                _pane.OutputStringThreadSafe(warning + Environment.NewLine);
             }
         }
     }
