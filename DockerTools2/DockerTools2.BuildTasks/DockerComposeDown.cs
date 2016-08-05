@@ -21,13 +21,13 @@ namespace DockerTools2.BuildTasks
             set { _mode = value; }
         }
 
-        public bool RemoveImages { get; set; }
+        public bool RemoveAllImages { get; set; }
 
         public bool RemoveOrphans { get; set; }
 
         protected override Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken)
         {
-            return workspace.DockerComposeClient.DownAsync(mode, RemoveImages, RemoveOrphans, logger, cancellationToken);
+            return workspace.DockerComposeClient.DownAsync(mode, RemoveAllImages, RemoveOrphans, logger, cancellationToken);
         }
     }
 }

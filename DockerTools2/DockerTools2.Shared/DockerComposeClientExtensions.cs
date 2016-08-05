@@ -16,74 +16,39 @@ namespace DockerTools2.Shared
                                               IDockerLogger logger,
                                               CancellationToken cancellationToken = default(CancellationToken))
         {
-            switch (mode)
+            if (mode != DockerDevelopmentMode.Regular)
             {
-                case DockerDevelopmentMode.Fast:
-                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
-                                               "build",
-                                               logger,
-                                               cancellationToken);
-
-                case DockerDevelopmentMode.Regular:
-                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
-                                               $"build" + (noCache ? " --no-cache" : ""),
-                                               logger,
-                                               cancellationToken);
-
-                default:
-                    throw new InvalidOperationException("The mode is not supported");
+                throw new ArgumentException("Build is supported in the regular mode only.", nameof(mode));
             }
+
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
+                                       $"build" + (noCache ? " --no-cache" : ""),
+                                       logger,
+                                       cancellationToken);
         }
 
         public static Task<string> UpAsync(this IDockerComposeClient client,
                                            DockerDevelopmentMode mode,
-                                           bool noBuild,
                                            IDockerLogger logger,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            switch (mode)
-            {
-                case DockerDevelopmentMode.Fast:
-                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
-                                               "up -d",
-                                               logger,
-                                               cancellationToken);
-
-                case DockerDevelopmentMode.Regular:
-                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
-                                               "up -d" + (noBuild ? " --no-build" : ""),
-                                               logger,
-                                               cancellationToken);
-
-                default:
-                    throw new InvalidOperationException("The mode is not supported");
-            }
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
+                                       "up -d" + (mode == DockerDevelopmentMode.Regular ? " --no-build" : ""),
+                                       logger,
+                                       cancellationToken);
         }
 
         public static Task<string> DownAsync(this IDockerComposeClient client,
                                              DockerDevelopmentMode mode,
-                                             bool removeImages,
+                                             bool removeAllImages,
                                              bool removeOrphans,
                                              IDockerLogger logger,
                                              CancellationToken cancellationToken = default(CancellationToken))
         {
-            switch (mode)
-            {
-                case DockerDevelopmentMode.Fast:
-                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
-                                               "down" + (removeImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
-                                               logger,
-                                               cancellationToken);
-
-                case DockerDevelopmentMode.Regular:
-                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
-                                               "down" + (removeImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
-                                               logger,
-                                               cancellationToken);
-
-                default:
-                    throw new InvalidOperationException("The mode is not supported");
-            }
+            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
+                                       "down" + (removeAllImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
+                                       logger,
+                                       cancellationToken);
         }
     }
 }

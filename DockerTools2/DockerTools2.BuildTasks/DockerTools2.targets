@@ -5,15 +5,13 @@
   <UsingTask TaskName="DockerComposeBuild" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
   <UsingTask TaskName="DockerComposeDown" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
 
-  <Target Name="SetDockerDevelopmentMode" BeforeTargets="Clean;Build;DockerPrepareForBuild;DockerComposeDown">
+  <Target Name="SetDockerDevelopmentMode" BeforeTargets="Clean;Build;DockerPrepareForBuild;DockerComposeBuild;DockerComposeDown">
     <PropertyGroup>
-      <_DockerDevelopmentMode Condition=" '$(_DockerDevelopmentMode)' == '' And '$(ActiveDebugProfile)' == 'Docker Fast' ">Fast</_DockerDevelopmentMode>
-      <_DockerDevelopmentMode Condition=" '$(_DockerDevelopmentMode)' == '' And '$(ActiveDebugProfile)' == 'Docker Regular' ">Regular</_DockerDevelopmentMode>
-      <_DockerWorkspaceDirectory Condition=" '$(_DockerWorkspaceDirectory)' == '' ">$(MSBuildProjectDirectory)</_DockerWorkspaceDirectory>
+      <_DockerDevelopmentMode Condition=" '$(ActiveDebugProfile)' == 'Docker Fast' ">Fast</_DockerDevelopmentMode>
+      <_DockerDevelopmentMode Condition=" '$(ActiveDebugProfile)' == 'Docker Regular' ">Regular</_DockerDevelopmentMode>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(_DockerDevelopmentMode)' == 'Regular' ">
-      <_DockerWorkspaceDirectory Condition=" Exists('$(PublishOutputPath)') ">$(PublishOutputPath)</_DockerWorkspaceDirectory>
       <DeployOnBuild>True</DeployOnBuild>
     </PropertyGroup>
   </Target>
@@ -23,10 +21,10 @@
   </Target>
 
   <Target Name="DockerComposeBuild" AfterTargets="Build" Condition=" '$(_DockerDevelopmentMode)' == 'Regular' ">
-    <DockerComposeBuild WorkspaceDirectory="$(_DockerWorkspaceDirectory)" Mode="$(_DockerDevelopmentMode)" NoCache="True" />
+    <DockerComposeBuild WorkspaceDirectory="$(PublishOutputPath)" Mode="$(_DockerDevelopmentMode)" NoCache="True" />
   </Target>
 
   <Target Name="DockerComposeDown" BeforeTargets="Clean" Condition=" '$(_DockerDevelopmentMode)' != '' ">
-    <DockerComposeDown WorkspaceDirectory="$(_DockerWorkspaceDirectory)" Mode="$(_DockerDevelopmentMode)" RemoveImages="True" RemoveOrphans="True" ContinueOnError="True" />
+    <DockerComposeDown WorkspaceDirectory="$(MSBuildProjectDirectory)" Mode="$(_DockerDevelopmentMode)" RemoveAllImages="True" RemoveOrphans="True" ContinueOnError="True" />
   </Target>
 </Project>

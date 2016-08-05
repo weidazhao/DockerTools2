@@ -69,7 +69,10 @@ namespace DockerTools2.Shared
                 {
                     errorData.Append(e.Data);
 
-                    logger?.LogError(e.Data);
+                    //
+                    // Docker sends info to stderr sometimes. Need to investigate if it's by design.
+                    //
+                    logger?.LogMessage(e.Data);
                 }
             };
 
