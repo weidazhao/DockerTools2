@@ -58,8 +58,6 @@ namespace DockerTools2.Shared
                 default:
                     throw new InvalidOperationException("The mode is not supported");
             }
-
-
         }
 
         public static Task<string> DownAsync(this IDockerComposeClient client,
