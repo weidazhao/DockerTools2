@@ -12,7 +12,8 @@ namespace DockerTools2.Shared
     {
         public static Task<string> BuildAsync(this IDockerComposeClient client,
                                               DockerDevelopmentMode mode,
-                                              bool noCache = false,
+                                              bool noCache,
+                                              IDockerLogger logger,
                                               CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (mode)
@@ -20,11 +21,13 @@ namespace DockerTools2.Shared
                 case DockerDevelopmentMode.Fast:
                     return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
                                                "build",
+                                               logger,
                                                cancellationToken);
 
                 case DockerDevelopmentMode.Regular:
                     return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
                                                $"build" + (noCache ? " --no-cache" : ""),
+                                               logger,
                                                cancellationToken);
 
                 default:
@@ -34,18 +37,21 @@ namespace DockerTools2.Shared
 
         public static Task<string> UpAsync(this IDockerComposeClient client,
                                            DockerDevelopmentMode mode,
-                                           bool noBuild = false,
+                                           bool noBuild,
+                                           IDockerLogger logger,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
             return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
                                        "up -d" + (noBuild ? " --no-build" : ""),
+                                       logger,
                                        cancellationToken);
         }
 
         public static Task<string> DownAsync(this IDockerComposeClient client,
                                              DockerDevelopmentMode mode,
-                                             bool removeImages = false,
-                                             bool removeOrphans = false,
+                                             bool removeImages,
+                                             bool removeOrphans,
+                                             IDockerLogger logger,
                                              CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (mode)
@@ -53,11 +59,13 @@ namespace DockerTools2.Shared
                 case DockerDevelopmentMode.Fast:
                     return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
                                                "down" + (removeImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
+                                               logger,
                                                cancellationToken);
 
                 case DockerDevelopmentMode.Regular:
                     return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
                                                "down" + (removeImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
+                                               logger,
                                                cancellationToken);
 
                 default:

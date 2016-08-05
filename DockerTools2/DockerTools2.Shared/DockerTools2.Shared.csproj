@@ -51,6 +51,7 @@
     <Compile Include="DockerDevelopmentModeParser.cs" />
     <Compile Include="IDockerComposeClient.cs" />
     <Compile Include="IDockerClient.cs" />
+    <Compile Include="IDockerLogger.cs" />
     <Compile Include="LaunchSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workspace.cs" />

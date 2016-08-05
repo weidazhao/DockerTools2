@@ -24,9 +24,9 @@ namespace DockerTools2.Shared
 
         public Workspace Workspace => _workspace;
 
-        public Task<string> ExecuteAsync(string options, string commandWithOptions, CancellationToken cancellationToken)
+        public Task<string> ExecuteAsync(string options, string commandWithOptions, IDockerLogger logger, CancellationToken cancellationToken)
         {
-            return _commandLineClient.ExecuteAsync(_dockerComposePath, options + " " + commandWithOptions, cancellationToken);
+            return _commandLineClient.ExecuteAsync(_dockerComposePath, options + " " + commandWithOptions, logger, cancellationToken);
         }
     }
 }

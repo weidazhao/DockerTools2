@@ -11,6 +11,6 @@ namespace DockerTools2.Shared
     {
         Workspace Workspace { get; }
 
-        Task<string> ExecuteAsync(string options, string commandWithOptions, CancellationToken cancellationToken);
+        Task<string> ExecuteAsync(string options, string commandWithOptions, IDockerLogger logger, CancellationToken cancellationToken);
     }
 }

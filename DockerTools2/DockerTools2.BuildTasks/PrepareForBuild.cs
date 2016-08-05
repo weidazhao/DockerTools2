@@ -21,7 +21,7 @@ namespace DockerTools2.BuildTasks
             set { _mode = value; }
         }
 
-        protected override async Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken)
         {
             //
             // Ensures that the special empty folder exists before build.
@@ -33,11 +33,11 @@ namespace DockerTools2.BuildTasks
             //
             // Ensures that the process in the container is terminated.
             //
-            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), cancellationToken);
+            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), logger, cancellationToken);
 
             if (!string.IsNullOrEmpty(containerId))
             {
-                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, cancellationToken);
+                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, logger, cancellationToken);
             }
         }
     }

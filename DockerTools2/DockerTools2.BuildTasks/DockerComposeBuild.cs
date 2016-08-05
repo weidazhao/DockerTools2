@@ -23,9 +23,9 @@ namespace DockerTools2.BuildTasks
 
         public bool NoCache { get; set; }
 
-        protected override Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, CancellationToken cancellationToken)
+        protected override Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken)
         {
-            return workspace.DockerComposeClient.BuildAsync(mode, NoCache, cancellationToken);
+            return workspace.DockerComposeClient.BuildAsync(mode, NoCache, logger, cancellationToken);
         }
     }
 }

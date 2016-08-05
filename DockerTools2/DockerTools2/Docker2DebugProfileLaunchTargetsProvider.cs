@@ -59,9 +59,9 @@ namespace DockerTools2
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
-            await workspace.DockerComposeClient.UpAsync(mode, noBuild: true);
+            await workspace.DockerComposeClient.UpAsync(mode, true, null);
 
-            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
+            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), null);
             if (string.IsNullOrEmpty(containerId))
             {
                 throw new InvalidOperationException($"Can not find the container with the name {workspace.WorkspaceName}.");
@@ -94,7 +94,7 @@ namespace DockerTools2
             }
             else
             {
-                workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}").Forget();
+                workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}", null).Forget();
 
                 return new List<IDebugLaunchSettings>();
             }

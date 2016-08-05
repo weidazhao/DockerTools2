@@ -13,7 +13,7 @@ namespace DockerTools2.Shared
 {
     public class CommandLineClient
     {
-        public Task<string> ExecuteAsync(string command, string arguments, CancellationToken cancellationToken)
+        public Task<string> ExecuteAsync(string command, string arguments, IDockerLogger logger, CancellationToken cancellationToken)
         {
             var startInfo = new ProcessStartInfo()
             {
@@ -53,14 +53,24 @@ namespace DockerTools2.Shared
 
             process.OutputDataReceived += (sender, e) =>
             {
-                outputData.Append(e.Data);
+                if (e.Data != null)
+                {
+                    outputData.Append(e.Data);
+
+                    logger?.LogMessage(e.Data);
+                }
             };
 
             var errorData = new StringBuilder();
 
             process.ErrorDataReceived += (sender, e) =>
             {
-                errorData.Append(e.Data);
+                if (e.Data != null)
+                {
+                    errorData.Append(e.Data);
+
+                    logger?.LogError(e.Data);
+                }
             };
 
             var taskCompletionSource = new TaskCompletionSource<string>();
