@@ -52,12 +52,12 @@ namespace DockerTools2.Shared
             {
                 case DockerDevelopmentMode.Fast:
                     return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
-                                               "down" + (removeImages ? " --rmi local" : "") + (removeOrphans ? " --remove-orphans" : ""),
+                                               "down" + (removeImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
                                                cancellationToken);
 
                 case DockerDevelopmentMode.Regular:
                     return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
-                                               "down" + (removeImages ? " --rmi local" : "") + (removeOrphans ? " --remove-orphans" : ""),
+                                               "down" + (removeImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
                                                cancellationToken);
 
                 default:
