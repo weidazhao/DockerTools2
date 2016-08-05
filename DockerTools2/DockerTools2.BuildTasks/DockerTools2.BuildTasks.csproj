@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{302BEBD6-CC6F-4FB2-B358-B8140101C96E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DockerTools2.BuildTasks</RootNamespace>
+    <AssemblyName>DockerTools2.BuildTasks</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Build.Framework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Build.Utilities.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="YamlDotNet, Version=3.8.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.Signed.3.8.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DockerComposeBuild.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DockerTools2.targets" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DockerTools2.Shared\DockerTools2.Shared.csproj">
+      <Project>{a05a0519-e87d-4797-a9a6-8f9942e8573b}</Project>
+      <Name>DockerTools2.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild" Condition=" '$(IsDesktopBuild)' == 'true' or '$(BuildingInsideVisualStudio)' == 'true' ">
+    <PropertyGroup>
+      <DotNetPublishingImportAfter>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0\DotNet\Microsoft.DotNet.Publishing\ImportAfter\</DotNetPublishingImportAfter>
+    </PropertyGroup>
+    <Copy SourceFiles="DockerTools2.targets" DestinationFiles="$(DotNetPublishingImportAfter)DockerTools2.targets" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)\DockerTools2.BuildTasks.dll" DestinationFiles="$(DotNetPublishingImportAfter)DockerTools2.BuildTasks.dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)\DockerTools2.Shared.dll" DestinationFiles="$(DotNetPublishingImportAfter)DockerTools2.Shared.dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)\YamlDotNet.dll" DestinationFiles="$(DotNetPublishingImportAfter)YamlDotNet.dll" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <RulesToCopy Include="ProjectSystem\Rules\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(ServiceFabricToolsMSBuildPath)Rules\%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

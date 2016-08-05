@@ -12,8 +12,12 @@
     </PropertyGroup>
   </Target>
 
+  <Target Name="TerminateProgram" BeforeTargets="Build" Condition="'$(_DockerFastMode)'=='True'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker ps --filter 'name=webapp' -q -n=1"  />
+  </Target>
+
   <Target Name="FastDockerComposeBuild" AfterTargets="Build" Condition="'$(_DockerFastMode)'=='True'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml build --no-cache" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml build" />
   </Target>
 
   <Target Name="FastDockerComposeDown" BeforeTargets="Clean" Condition="'$(DockerFastMode)'=='True'">
