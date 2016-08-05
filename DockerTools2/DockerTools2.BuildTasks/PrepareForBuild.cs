@@ -35,7 +35,10 @@ namespace DockerTools2.BuildTasks
             //
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), cancellationToken);
 
-            await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, cancellationToken);
+            if (!string.IsNullOrEmpty(containerId))
+            {
+                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, cancellationToken);
+            }
         }
     }
 }

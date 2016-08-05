@@ -62,6 +62,10 @@ namespace DockerTools2
             await workspace.DockerComposeClient.UpAsync(mode, noBuild: true);
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
+            if (string.IsNullOrEmpty(containerId))
+            {
+                throw new InvalidOperationException($"Can not find the container with the name {workspace.WorkspaceName}.");
+            }
 
             string configuration = ConfiguredProject.ProjectConfiguration.Dimensions["Configuration"];
             string debuggeeArguments = launchSettings.DebuggeeArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0");
