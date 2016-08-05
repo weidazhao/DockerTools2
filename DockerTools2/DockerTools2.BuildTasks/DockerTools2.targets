@@ -22,7 +22,7 @@
     <PrepareForBuild WorkspaceDirectory="$(MSBuildProjectDirectory)" Mode="$(_DockerDevelopmentMode)" />
   </Target>
 
-  <Target Name="DockerComposeBuild" AfterTargets="Build" Condition=" '$(_DockerDevelopmentMode)' != '' ">
+  <Target Name="DockerComposeBuild" AfterTargets="Build" Condition=" '$(_DockerDevelopmentMode)' == 'Regular' ">
     <DockerComposeBuild WorkspaceDirectory="$(_DockerWorkspaceDirectory)" Mode="$(_DockerDevelopmentMode)" NoCache="True" />
   </Target>
 

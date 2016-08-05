@@ -41,10 +41,25 @@ namespace DockerTools2.Shared
                                            IDockerLogger logger,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
-                                       "up -d" + (noBuild ? " --no-build" : ""),
-                                       logger,
-                                       cancellationToken);
+            switch (mode)
+            {
+                case DockerDevelopmentMode.Fast:
+                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
+                                               "up -d",
+                                               logger,
+                                               cancellationToken);
+
+                case DockerDevelopmentMode.Regular:
+                    return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
+                                               "up -d" + (noBuild ? " --no-build" : ""),
+                                               logger,
+                                               cancellationToken);
+
+                default:
+                    throw new InvalidOperationException("The mode is not supported");
+            }
+
+
         }
 
         public static Task<string> DownAsync(this IDockerComposeClient client,
