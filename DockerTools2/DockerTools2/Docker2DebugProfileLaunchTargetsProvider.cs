@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DockerTools2
@@ -22,9 +21,6 @@ namespace DockerTools2
     [OrderPrecedence(1000)]
     public class Docker2DebugProfileLaunchTargetsProvider : IDebugProfileLaunchTargetsProvider
     {
-        private const string FastMode = "Docker Fast";
-        private const string RegularMode = "Docker Regular";
-
         [Import(typeof(SVsServiceProvider))]
         private IServiceProvider ServiceProvider { get; set; }
 
@@ -54,7 +50,7 @@ namespace DockerTools2
     MIMode = ""{5}"" />";
 
             DockerDevelopmentMode mode;
-            if (!TryParseDockerDevelopmentMode(profile.Name, out mode))
+            if (!DockerDevelopmentModeParser.TryParse(profile.Name, out mode))
             {
                 throw new InvalidOperationException("The given profile is not supported");
             }
@@ -63,16 +59,9 @@ namespace DockerTools2
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
-            if (!string.IsNullOrEmpty(launchSettings.EmptyFolderForDockerBuild))
-            {
-                EnsureEmptyDirectoryExists(Path.Combine(workspace.WorkspaceDirectory, launchSettings.EmptyFolderForDockerBuild));
-            }
-
-            await workspace.DockerComposeClient.DevelopmentUpAsync(mode);
+            await workspace.DockerComposeClient.UpAsync(mode, noBuild: true);
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
-
-            await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram);
 
             string configuration = ConfiguredProject.ProjectConfiguration.Dimensions["Configuration"];
             string debuggeeArguments = launchSettings.DebuggeeArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0");
@@ -110,47 +99,7 @@ namespace DockerTools2
         public bool SupportsProfile(IDebugProfile profile)
         {
             DockerDevelopmentMode mode;
-            return TryParseDockerDevelopmentMode(profile.Name, out mode);
-        }
-
-        private bool TryParseDockerDevelopmentMode(string value, out DockerDevelopmentMode mode)
-        {
-            mode = DockerDevelopmentMode.Regular;
-
-            if (StringComparer.Ordinal.Equals(value, FastMode))
-            {
-                mode = DockerDevelopmentMode.Fast;
-                return true;
-            }
-            else if (StringComparer.Ordinal.Equals(value, RegularMode))
-            {
-                mode = DockerDevelopmentMode.Regular;
-                return true;
-            }
-
-            return false;
-        }
-
-        private void EnsureEmptyDirectoryExists(string directory)
-        {
-            try
-            {
-                if (Directory.Exists(directory))
-                {
-                    if (Directory.EnumerateFileSystemEntries(directory).Any())
-                    {
-                        Directory.Delete(directory, recursive: true);
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(directory);
-                }
-            }
-            catch
-            {
-                // Do nothing for now.
-            }
+            return DockerDevelopmentModeParser.TryParse(profile.Name, out mode);
         }
     }
 }

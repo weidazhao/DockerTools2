@@ -43,7 +43,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseBuildTask.cs" />
     <Compile Include="DockerComposeBuild.cs" />
+    <Compile Include="DockerComposeDown.cs" />
+    <Compile Include="PrepareForBuild.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,10 +64,10 @@
     <PropertyGroup>
       <DotNetPublishingImportAfter>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0\DotNet\Microsoft.DotNet.Publishing\ImportAfter\</DotNetPublishingImportAfter>
     </PropertyGroup>
-    <Copy SourceFiles="DockerTools2.targets" DestinationFiles="$(DotNetPublishingImportAfter)DockerTools2.targets" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(OutputPath)\DockerTools2.BuildTasks.dll" DestinationFiles="$(DotNetPublishingImportAfter)DockerTools2.BuildTasks.dll" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(OutputPath)\DockerTools2.Shared.dll" DestinationFiles="$(DotNetPublishingImportAfter)DockerTools2.Shared.dll" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(OutputPath)\YamlDotNet.dll" DestinationFiles="$(DotNetPublishingImportAfter)YamlDotNet.dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="DockerTools2.targets" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2.targets" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)\DockerTools2.BuildTasks.dll" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2\DockerTools2.BuildTasks.dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)\DockerTools2.Shared.dll" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2\DockerTools2.Shared.dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)\YamlDotNet.dll" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2\YamlDotNet.dll" SkipUnchangedFiles="true" />
     <ItemGroup>
       <RulesToCopy Include="ProjectSystem\Rules\**\*" />
     </ItemGroup>

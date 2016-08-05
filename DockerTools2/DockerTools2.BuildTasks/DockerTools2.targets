@@ -1,34 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="SetDockerDevelopmentMode" BeforeTargets="Build;FastDockerComposeDown;RegularDockerComposeDown">
+  <UsingTask TaskName="PrepareForBuild" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
+  <UsingTask TaskName="DockerComposeBuild" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
+  <UsingTask TaskName="DockerComposeDown" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
+
+  <Target Name="SetDockerDevelopmentMode" BeforeTargets="DockerPrepareForBuild;Build;DockerComposeDown">
     <PropertyGroup>
-      <_DockerFastMode Condition=" '$(_DockerFastMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Fast')">True</_DockerFastMode>
-      <_DockerRegularMode Condition=" '$(_DockerRegularMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Regular')">True</_DockerRegularMode>
+      <_DockerDevelopmentMode Condition=" '$(_DockerDevelopmentMode)' == '' And '$(ActiveDebugProfile)' == 'Docker Fast' ">Fast</_DockerDevelopmentMode>
+      <_DockerDevelopmentMode Condition=" '$(_DockerDevelopmentMode)' == '' And '$(ActiveDebugProfile)' == 'Docker Regular' ">Regular</_DockerDevelopmentMode>
+      <_DockerWorkspaceDirectory Condition=" '$(_DockerWorkspaceDirectory)' == '' ">$(MSBuildProjectDirectory)</_DockerWorkspaceDirectory>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(_DockerRegularMode)' == 'True'">
+    <PropertyGroup Condition=" '$(_DockerDevelopmentMode)' == 'Regular' ">
+      <_DockerWorkspaceDirectory Condition=" Exists('$(PublishOutputPath)') ">$(PublishOutputPath)</_DockerWorkspaceDirectory>
       <DeployOnBuild>True</DeployOnBuild>
     </PropertyGroup>
   </Target>
 
-  <Target Name="TerminateProgram" BeforeTargets="Build" Condition="'$(_DockerFastMode)'=='True'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker ps --filter 'name=webapp' -q -n=1"  />
+  <Target Name="DockerPrepareForBuild" BeforeTargets="Build" Condition=" '$(_DockerDevelopmentMode)' != '' ">
+    <PrepareForBuild WorkspaceDirectory="$(MSBuildProjectDirectory)" Mode="$(_DockerDevelopmentMode)" />
   </Target>
 
-  <Target Name="FastDockerComposeBuild" AfterTargets="Build" Condition="'$(_DockerFastMode)'=='True'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml build" />
+  <Target Name="DockerComposeBuild" AfterTargets="Build" Condition=" '$(_DockerDevelopmentMode)' != '' ">
+    <DockerComposeBuild WorkspaceDirectory="$(_DockerWorkspaceDirectory)" Mode="$(_DockerDevelopmentMode)" NoCache="True" />
   </Target>
 
-  <Target Name="FastDockerComposeDown" BeforeTargets="Clean" Condition="'$(DockerFastMode)'=='True'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml down --rmi all --remove-orphans" ContinueOnError="True" />
-  </Target>
-
-  <Target Name="RegularDockerComposeBuild" AfterTargets="WebPublish" Condition="'$(_DockerRegularMode)'=='True'">
-    <Exec WorkingDirectory="$(PublishOutputPath)" Command="docker-compose build --no-cache" />
-  </Target>
-
-  <Target Name="RegularDockerComposeDown" BeforeTargets="Clean" Condition="'$(_DockerRegularMode)'=='True'">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml down --rmi all --remove-orphans" ContinueOnError="True" />
+  <Target Name="DockerComposeDown" BeforeTargets="Clean" Condition=" '$(_DockerDevelopmentMode)' != '' ">
+    <DockerComposeDown WorkspaceDirectory="$(_DockerWorkspaceDirectory)" Mode="$(_DockerDevelopmentMode)" RemoveImages="True" RemoveOrphans="True" ContinueOnError="True" />
   </Target>
 </Project>

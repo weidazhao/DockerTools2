@@ -5,7 +5,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace DockerTools2.BuildTasks
 {
-    public class DockerComposeBuild : BaseBuildTask
+    public class DockerComposeDown : BaseBuildTask
     {
         [Required]
         public string WorkspaceDirectory
@@ -21,11 +21,13 @@ namespace DockerTools2.BuildTasks
             set { _mode = value; }
         }
 
-        public bool NoCache { get; set; }
+        public bool RemoveImages { get; set; }
+
+        public bool RemoveOrphans { get; set; }
 
         protected override Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, CancellationToken cancellationToken)
         {
-            return workspace.DockerComposeClient.BuildAsync(mode, NoCache, cancellationToken);
+            return workspace.DockerComposeClient.DownAsync(mode, RemoveImages, RemoveOrphans, cancellationToken);
         }
     }
 }

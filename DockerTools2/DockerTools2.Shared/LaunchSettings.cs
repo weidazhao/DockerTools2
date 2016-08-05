@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace DockerTools2.Shared
 {
@@ -26,6 +28,35 @@ namespace DockerTools2.Shared
         public string DebuggerMIMode { get; set; }
 
         public string EmptyFolderForDockerBuild { get; set; }
+
+        public void EnsureEmptyFolderForDockerBuildExists(string rootDirectory)
+        {
+            if (string.IsNullOrEmpty(EmptyFolderForDockerBuild))
+            {
+                return;
+            }
+
+            string directory = Path.Combine(rootDirectory, EmptyFolderForDockerBuild);
+
+            try
+            {
+                if (Directory.Exists(directory))
+                {
+                    if (Directory.EnumerateFileSystemEntries(directory).Any())
+                    {
+                        Directory.Delete(directory, recursive: true);
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(directory);
+                }
+            }
+            catch
+            {
+                // Do nothing for now.
+            }
+        }
 
         public static LaunchSettings FromDockerComposeDocument(string serviceName, DockerComposeDocument document)
         {
