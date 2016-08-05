@@ -1,33 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="SetDockerProps" BeforeTargets="Build;Clean">
+  <Target Name="SetDockerDevelopmentMode" BeforeTargets="Build;FastDockerComposeDown;RegularDockerComposeDown">
     <PropertyGroup>
-      <DockerFastMode Condition=" '$(DockerFastMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Fast')">True</DockerFastMode>
-      <DockerRegularMode Condition=" '$(DockerRegularMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Regular')">True</DockerRegularMode>
+      <_DockerFastMode Condition=" '$(_DockerFastMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Fast')">True</_DockerFastMode>
+      <_DockerRegularMode Condition=" '$(_DockerRegularMode)'=='' And ('$(ActiveDebugProfile)' == 'Docker Regular')">True</_DockerRegularMode>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(DockerFastMode)' == 'True'">
-      <DockerWorkingDirectory>$(MSBuildProjectDirectory)</DockerWorkingDirectory>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(DockerRegularMode)' == 'True'">
-      <DockerWorkingDirectory>$(PublishOutputPath)</DockerWorkingDirectory>
+    <PropertyGroup Condition="'$(_DockerRegularMode)' == 'True'">
       <DeployOnBuild>True</DeployOnBuild>
     </PropertyGroup>
   </Target>
 
-  <Target Name="DockerComposeBuild" AfterTargets="WebPublish" Condition="'$(DockerRegularMode)'=='True' And '$(DeployOnBuild)'=='True'">
-    <Exec WorkingDirectory="$(DockerWorkingDirectory)" Command="docker-compose build --no-cache" />
+  <Target Name="FastDockerComposeBuild" AfterTargets="Build" Condition="'$(_DockerFastMode)'=='True'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml build --no-cache" />
   </Target>
 
-  <Target Name="DockerComposeDown" AfterTargets="Clean" Condition="'$(DockerFastMode)'=='True' Or '$(DockerRegularMode)'=='True'">
-    <PropertyGroup Condition="'$(DockerFastMode)'=='True'">
-      <DockerComposeDownCommand>docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml down --rmi all --remove-orphans</DockerComposeDownCommand>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(DockerRegularMode)'=='True'">
-      <DockerComposeDownCommand>docker-compose down --rmi all --remove-orphans</DockerComposeDownCommand>
-    </PropertyGroup>
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(DockerComposeDownCommand)" ContinueOnError="True" />
+  <Target Name="FastDockerComposeDown" BeforeTargets="Clean" Condition="'$(DockerFastMode)'=='True'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml -f docker-compose.dev.fast.yml down --rmi all --remove-orphans" ContinueOnError="True" />
+  </Target>
+
+  <Target Name="RegularDockerComposeBuild" AfterTargets="WebPublish" Condition="'$(_DockerRegularMode)'=='True'">
+    <Exec WorkingDirectory="$(PublishOutputPath)" Command="docker-compose build --no-cache" />
+  </Target>
+
+  <Target Name="RegularDockerComposeDown" BeforeTargets="Clean" Condition="'$(_DockerRegularMode)'=='True'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="docker-compose -f docker-compose.yml down --rmi all --remove-orphans" ContinueOnError="True" />
   </Target>
 </Project>
