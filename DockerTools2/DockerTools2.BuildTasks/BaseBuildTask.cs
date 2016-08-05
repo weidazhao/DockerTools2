@@ -1,4 +1,5 @@
 ﻿using DockerTools2.Shared;
+using Microsoft.Build.Framework;
 using System;
 using System.IO;
 using System.Threading;
@@ -57,7 +58,7 @@ namespace DockerTools2.BuildTasks
 
             public void LogMessage(string message)
             {
-                _buildTask.Log.LogMessage(message);
+                _buildTask.Log.LogMessage(MessageImportance.High, message);
             }
 
             public void LogWarning(string warning)

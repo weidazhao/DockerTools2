@@ -15,6 +15,8 @@ namespace DockerTools2.Shared
     {
         public Task<string> ExecuteAsync(string command, string arguments, IDockerLogger logger, CancellationToken cancellationToken)
         {
+            logger?.LogMessage($"\"{command}\" \"{arguments}\"");
+
             var startInfo = new ProcessStartInfo()
             {
                 FileName = command,
