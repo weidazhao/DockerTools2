@@ -24,9 +24,11 @@ namespace DockerTools2.Shared
 
         public IDockerComposeClient DockerComposeClient => _dockerComposeClient;
 
-        public string WorkspaceName => _workspaceDirectory.Name;
-
         public string WorkspaceDirectory => _workspaceDirectory.FullName;
+
+        public string ServiceName => _workspaceDirectory.Name.ToLowerInvariant();
+
+        public string ServiceTag => $"{ServiceName}_{ServiceName}";
 
         public string DockerFilePath => Path.Combine(WorkspaceDirectory, "Dockerfile");
 
@@ -66,7 +68,7 @@ namespace DockerTools2.Shared
                 var deserializer = new YamlDeserializer(null, null, true);
                 var document = deserializer.Deserialize<DockerComposeDocument>(reader);
 
-                return LaunchSettings.FromDockerComposeDocument(WorkspaceName.ToLowerInvariant(), document);
+                return LaunchSettings.FromDockerComposeDocument(ServiceName, document);
             }
         }
     }

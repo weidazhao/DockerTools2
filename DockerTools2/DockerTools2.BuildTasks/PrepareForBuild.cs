@@ -33,7 +33,7 @@ namespace DockerTools2.BuildTasks
             //
             // Ensures that the process in the container is terminated.
             //
-            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), logger, cancellationToken);
+            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.ServiceTag, logger, cancellationToken);
 
             if (!string.IsNullOrEmpty(containerId))
             {
