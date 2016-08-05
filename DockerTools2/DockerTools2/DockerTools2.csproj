@@ -69,6 +69,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProviderExtensions.cs" />
     <Compile Include="UnconfiguredProjectExtensions.cs" />
+    <Compile Include="VsOutputWindowPaneHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

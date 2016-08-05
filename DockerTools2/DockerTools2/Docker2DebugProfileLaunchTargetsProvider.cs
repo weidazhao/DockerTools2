@@ -55,13 +55,15 @@ namespace DockerTools2
                 throw new InvalidOperationException("The given profile is not supported");
             }
 
+            var dockerLogger = VsOutputWindowPaneHelper.GetDebugOutputWindowPane(ServiceProvider, false, true).ToDockerLogger();
+
             var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
-            await workspace.DockerComposeClient.UpAsync(mode, true, null);
+            await workspace.DockerComposeClient.UpAsync(mode, true, dockerLogger);
 
-            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), null);
+            string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant(), dockerLogger);
             if (string.IsNullOrEmpty(containerId))
             {
                 throw new InvalidOperationException($"Can not find the container with the name {workspace.WorkspaceName}.");
@@ -94,7 +96,12 @@ namespace DockerTools2
             }
             else
             {
-                workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}", null).Forget();
+                if (mode == DockerDevelopmentMode.Regular)
+                {
+                    throw new InvalidOperationException("Edit & Refresh is supported in fast mode only.");
+                }
+
+                workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}", dockerLogger).Forget();
 
                 return new List<IDebugLaunchSettings>();
             }

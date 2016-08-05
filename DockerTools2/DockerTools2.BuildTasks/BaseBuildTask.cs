@@ -29,7 +29,7 @@ namespace DockerTools2.BuildTasks
 
             try
             {
-                ExecuteAsync(workspace, mode, new Logger(this), CancellationToken.None).GetAwaiter().GetResult();
+                ExecuteAsync(workspace, mode, new DockerLogger(this), CancellationToken.None).GetAwaiter().GetResult();
                 return true;
             }
             catch (Exception ex)
@@ -41,11 +41,11 @@ namespace DockerTools2.BuildTasks
 
         protected abstract Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken);
 
-        private class Logger : IDockerLogger
+        private class DockerLogger : IDockerLogger
         {
             private readonly BuildTask _buildTask;
 
-            public Logger(BuildTask buildTask)
+            public DockerLogger(BuildTask buildTask)
             {
                 _buildTask = buildTask;
             }
