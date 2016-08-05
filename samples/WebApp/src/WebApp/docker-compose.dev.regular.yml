@@ -6,6 +6,7 @@ services:
       - "com.microsoft.visualstudio.debuggee.program=dotnet"
       - "com.microsoft.visualstudio.debuggee.arguments=WebApp.dll"
       - "com.microsoft.visualstudio.debuggee.workingdirectory=/app"
+      - "com.microsoft.visualstudio.debuggee.terminateprogram=/bin/bash -c ps -ef | grep dotnet | grep -v grep | awk '{print $$2}' | xargs kill"
       - "com.microsoft.visualstudio.debugger.program=/clrdbg/clrdbg"
       - "com.microsoft.visualstudio.debugger.arguments=--interpreter=mi"
       - "com.microsoft.visualstudio.debugger.targetarchitecture=x64"

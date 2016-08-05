@@ -15,6 +15,8 @@ namespace DockerTools2.Shared
 
         public string DebuggeeWorkingDirectory { get; set; }
 
+        public string DebuggeeTerminateProgram { get; set; }
+
         public string DebuggerProgram { get; set; }
 
         public string DebuggerArguments { get; set; }
@@ -57,6 +59,12 @@ namespace DockerTools2.Shared
                 return null;
             }
 
+            string debuggeeTerminateProgram;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.terminateprogram", out debuggeeTerminateProgram))
+            {
+                return null;
+            }
+
             string debuggerProgram;
             if (!TryGetValue(labels, "com.microsoft.visualstudio.debugger.program", out debuggerProgram))
             {
@@ -94,6 +102,7 @@ namespace DockerTools2.Shared
                 DebuggeeProgram = debuggeeProgram,
                 DebuggeeArguments = debuggeeArguments,
                 DebuggeeWorkingDirectory = debuggeeWorkingDirectory,
+                DebuggeeTerminateProgram = debuggeeTerminateProgram,
                 DebuggerProgram = debuggerProgram,
                 DebuggerArguments = debuggerArguments,
                 DebuggerTargetArchitecture = debuggerTargetArchitecture,
@@ -111,6 +120,9 @@ namespace DockerTools2.Shared
                 if (label.StartsWith(labelName + "=", StringComparison.Ordinal))
                 {
                     labelValue = label.Substring(labelName.Length + 1);
+
+                    labelValue = labelValue.Replace("$$", "$");
+
                     return true;
                 }
             }

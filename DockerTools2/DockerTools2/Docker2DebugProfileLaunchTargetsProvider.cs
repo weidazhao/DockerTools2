@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.ProjectSystem.Utilities;
 using Microsoft.VisualStudio.ProjectSystem.Utilities.DebuggerProviders;
 using Microsoft.VisualStudio.ProjectSystem.VS.Debuggers;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -71,27 +72,39 @@ namespace DockerTools2
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.WorkspaceName.ToLowerInvariant());
 
+            await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram);
+
             string configuration = ConfiguredProject.ProjectConfiguration.Dimensions["Configuration"];
+            string debuggeeArguments = launchSettings.DebuggeeArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0");
 
-            string settingsOptions = string.Format(CultureInfo.InvariantCulture,
-                                                   SettingsOptionsTemplate,
-                                                   "docker",
-                                                   $"exec -i {containerId} {launchSettings.DebuggerProgram} {launchSettings.DebuggerArguments}",
-                                                   launchSettings.DebuggeeProgram,
-                                                   launchSettings.DebuggeeArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0"),
-                                                   launchSettings.DebuggerTargetArchitecture,
-                                                   launchSettings.DebuggerMIMode);
+            if (!launchOptions.HasFlag(DebugLaunchOptions.NoDebug))
+            {
+                string settingsOptions = string.Format(CultureInfo.InvariantCulture,
+                                                       SettingsOptionsTemplate,
+                                                       "docker",
+                                                       $"exec -i {containerId} {launchSettings.DebuggerProgram} {launchSettings.DebuggerArguments}",
+                                                       launchSettings.DebuggeeProgram,
+                                                       debuggeeArguments,
+                                                       launchSettings.DebuggerTargetArchitecture,
+                                                       launchSettings.DebuggerMIMode);
 
-            var settings = new DebugLaunchSettings(launchOptions);
-            settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
-            settings.Executable = launchSettings.DebuggeeProgram;
-            settings.Options = settingsOptions;
-            settings.SendToOutputWindow = true;
-            settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;
-            settings.CurrentDirectory = launchSettings.DebuggeeWorkingDirectory;
-            settings.LaunchDebugEngineGuid = new Guid(MIDebugEngineGuid);
+                var settings = new DebugLaunchSettings(launchOptions);
+                settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
+                settings.Executable = launchSettings.DebuggeeProgram;
+                settings.Options = settingsOptions;
+                settings.SendToOutputWindow = true;
+                settings.Project = ConfiguredProject.UnconfiguredProject.ToHierarchy(ServiceProvider).VsHierarchy;
+                settings.CurrentDirectory = launchSettings.DebuggeeWorkingDirectory;
+                settings.LaunchDebugEngineGuid = new Guid(MIDebugEngineGuid);
 
-            return new List<IDebugLaunchSettings>() { settings };
+                return new List<IDebugLaunchSettings>() { settings };
+            }
+            else
+            {
+                workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}").Forget();
+
+                return new List<IDebugLaunchSettings>();
+            }
         }
 
         public bool SupportsProfile(IDebugProfile profile)
