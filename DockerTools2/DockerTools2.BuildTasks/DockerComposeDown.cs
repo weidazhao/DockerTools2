@@ -25,9 +25,18 @@ namespace DockerTools2.BuildTasks
 
         public bool RemoveOrphans { get; set; }
 
-        protected override Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken)
         {
-            return workspace.DockerComposeClient.DownAsync(mode, RemoveAllImages, RemoveOrphans, logger, cancellationToken);
+            //
+            // Detects if development mode has changed since last time. If yes, run docker compose down against the previous mode first.
+            //
+            DockerDevelopmentMode previous;
+            if (workspace.TryGetDockerDevelopmentModeFromCache(out previous) && previous != mode)
+            {
+                await workspace.DockerComposeClient.DownAsync(previous, RemoveAllImages, RemoveOrphans, logger, cancellationToken);
+            }
+
+            await workspace.DockerComposeClient.DownAsync(mode, RemoveAllImages, RemoveOrphans, logger, cancellationToken);
         }
     }
 }

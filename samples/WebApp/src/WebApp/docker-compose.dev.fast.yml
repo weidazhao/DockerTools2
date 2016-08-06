@@ -5,7 +5,7 @@ services:
     image: weidazhao/webapp:dev
     build:
       args:
-        source: obj/empty-folder-for-docker-build
+        source: obj/Docker/empty/
     labels:
       - "com.microsoft.visualstudio.debuggee.url=http://localhost"
       - "com.microsoft.visualstudio.debuggee.program=dotnet"

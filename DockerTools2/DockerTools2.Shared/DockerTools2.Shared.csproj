@@ -49,7 +49,6 @@
     <Compile Include="DockerComposeClientExtensions.cs" />
     <Compile Include="DockerComposeDataContracts.cs" />
     <Compile Include="DockerDevelopmentMode.cs" />
-    <Compile Include="DockerDevelopmentModeParser.cs" />
     <Compile Include="IDockerComposeClient.cs" />
     <Compile Include="IDockerClient.cs" />
     <Compile Include="IDockerLogger.cs" />

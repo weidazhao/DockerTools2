@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace DockerTools2
@@ -29,13 +28,13 @@ namespace DockerTools2
 
         public void OnAfterLaunch(DebugLaunchOptions launchOptions, IDebugProfile profile)
         {
+            var workspace = ConfiguredProject.UnconfiguredProject.ToWorkspace();
+
             DockerDevelopmentMode mode;
-            if (!DockerDevelopmentModeParser.TryParse(profile.Name, out mode))
+            if (!workspace.TryParseDockerDevelopmentMode(profile.Name, out mode))
             {
                 throw new InvalidOperationException("The given profile is not supported");
             }
-
-            var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
@@ -68,8 +67,10 @@ namespace DockerTools2
     TargetArchitecture = ""{4}""
     MIMode = ""{5}"" />";
 
+            var workspace = ConfiguredProject.UnconfiguredProject.ToWorkspace();
+
             DockerDevelopmentMode mode;
-            if (!DockerDevelopmentModeParser.TryParse(profile.Name, out mode))
+            if (!workspace.TryParseDockerDevelopmentMode(profile.Name, out mode))
             {
                 throw new InvalidOperationException("The given profile is not supported");
             }
@@ -80,8 +81,6 @@ namespace DockerTools2
             }
 
             var dockerLogger = VsOutputWindowPaneHelper.GetDebugOutputWindowPane(ServiceProvider, false, true).ToDockerLogger();
-
-            var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
@@ -96,6 +95,8 @@ namespace DockerTools2
             //
 
             await workspace.DockerComposeClient.UpAsync(mode, dockerLogger);
+
+            workspace.TrySetDockerDevelopmentModeToCache(mode);
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.ServiceTag, dockerLogger);
             if (string.IsNullOrEmpty(containerId))
@@ -148,8 +149,10 @@ namespace DockerTools2
 
         public bool SupportsProfile(IDebugProfile profile)
         {
+            var workspace = ConfiguredProject.UnconfiguredProject.ToWorkspace();
+
             DockerDevelopmentMode mode;
-            return DockerDevelopmentModeParser.TryParse(profile.Name, out mode);
+            return workspace.TryParseDockerDevelopmentMode(profile.Name, out mode);
         }
     }
 }

@@ -14,6 +14,8 @@ namespace DockerTools2.Shared
 {
     public class Workspace
     {
+        private const string DockerDevelopmentModeCacheFile = @"obj\Docker\DockerDevelopmentMode";
+
         private readonly DirectoryInfo _workspaceDirectory;
         private readonly IDockerClient _dockerClient;
         private readonly IDockerComposeClient _dockerComposeClient;
@@ -38,6 +40,63 @@ namespace DockerTools2.Shared
         public string DockerFilePath => Path.Combine(WorkspaceDirectory, "Dockerfile");
 
         public string DockerComposeFilePath => Path.Combine(WorkspaceDirectory, "docker-compose.yml");
+
+        public bool TryParseDockerDevelopmentMode(string value, out DockerDevelopmentMode mode)
+        {
+            mode = DockerDevelopmentMode.Regular;
+
+            if (StringComparer.Ordinal.Equals(value, "Docker Fast") || StringComparer.Ordinal.Equals(value, "Fast"))
+            {
+                mode = DockerDevelopmentMode.Fast;
+                return true;
+            }
+            else if (StringComparer.Ordinal.Equals(value, "Docker Regular") || StringComparer.Ordinal.Equals(value, "Regular"))
+            {
+                mode = DockerDevelopmentMode.Regular;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool TryGetDockerDevelopmentModeFromCache(out DockerDevelopmentMode mode)
+        {
+            mode = DockerDevelopmentMode.Regular;
+
+            try
+            {
+                var fileInfo = new FileInfo(Path.Combine(WorkspaceDirectory, DockerDevelopmentModeCacheFile));
+
+                if (!fileInfo.Exists)
+                {
+                    return false;
+                }
+
+                return TryParseDockerDevelopmentMode(File.ReadAllText(fileInfo.FullName), out mode);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool TrySetDockerDevelopmentModeToCache(DockerDevelopmentMode current)
+        {
+            try
+            {
+                var fileInfo = new FileInfo(Path.Combine(WorkspaceDirectory, DockerDevelopmentModeCacheFile));
+
+                fileInfo.Directory.Create();
+
+                File.WriteAllText(fileInfo.FullName, current.ToString());
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public string GetDockerComposeDevFilePath(DockerDevelopmentMode mode)
         {

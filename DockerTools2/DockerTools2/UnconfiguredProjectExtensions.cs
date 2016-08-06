@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualStudio;
+﻿using DockerTools2.Shared;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.IO;
 
 namespace DockerTools2
 {
@@ -17,6 +19,11 @@ namespace DockerTools2
             }
 
             return Hierarchy.Empty;
+        }
+
+        public static Workspace ToWorkspace(this UnconfiguredProject project)
+        {
+            return new Workspace(Path.GetDirectoryName(project.FullPath));
         }
     }
 }

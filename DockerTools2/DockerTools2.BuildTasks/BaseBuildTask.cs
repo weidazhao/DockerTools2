@@ -23,7 +23,7 @@ namespace DockerTools2.BuildTasks
             var workspace = new Workspace(_workspaceDirectory);
 
             DockerDevelopmentMode mode;
-            if (!DockerDevelopmentModeParser.TryParse(_mode, out mode))
+            if (!workspace.TryParseDockerDevelopmentMode(_mode, out mode))
             {
                 return false;
             }

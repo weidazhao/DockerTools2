@@ -24,6 +24,15 @@ namespace DockerTools2.BuildTasks
         protected override async Task ExecuteAsync(Workspace workspace, DockerDevelopmentMode mode, IDockerLogger logger, CancellationToken cancellationToken)
         {
             //
+            // Detects if development mode has changed since last time. If yes, run docker compose down against the previous mode first.
+            //
+            DockerDevelopmentMode previous;
+            if (workspace.TryGetDockerDevelopmentModeFromCache(out previous) && previous != mode)
+            {
+                await workspace.DockerComposeClient.DownAsync(previous, true, true, logger, cancellationToken);
+            }
+
+            //
             // Ensures that the special empty folder exists before build.
             //
             var launchSettings = workspace.ParseLaunchSettings(mode);

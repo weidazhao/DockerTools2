@@ -58,6 +58,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Docker2BuildUpToDateCheckProvider.cs" />
     <Compile Include="Docker2DebugProfileLaunchTargetsProvider.cs" />
     <Compile Include="DockerTools2Package.cs" />
     <Compile Include="DteProject.cs" />
