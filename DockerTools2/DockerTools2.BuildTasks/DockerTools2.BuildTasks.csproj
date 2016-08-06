@@ -60,7 +60,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild" Condition=" '$(IsDesktopBuild)' == 'true' or '$(BuildingInsideVisualStudio)' == 'true' ">
+  <Target Name="CopyFilesToDotNetPublishingImportAfter" AfterTargets="Build" Condition=" '$(IsDesktopBuild)' == 'true' or '$(BuildingInsideVisualStudio)' == 'true' ">
     <PropertyGroup>
       <DotNetPublishingImportAfter>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0\DotNet\Microsoft.DotNet.Publishing\ImportAfter\</DotNetPublishingImportAfter>
     </PropertyGroup>
@@ -68,9 +68,14 @@
     <Copy SourceFiles="$(OutputPath)\DockerTools2.BuildTasks.dll" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2\DockerTools2.BuildTasks.dll" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(OutputPath)\DockerTools2.Shared.dll" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2\DockerTools2.Shared.dll" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(OutputPath)\YamlDotNet.dll" DestinationFiles="$(DotNetPublishingImportAfter)\DockerTools2\YamlDotNet.dll" SkipUnchangedFiles="true" />
-    <ItemGroup>
-      <RulesToCopy Include="ProjectSystem\Rules\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(ServiceFabricToolsMSBuildPath)Rules\%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="DeleteFilesFromDotNetPublishingImportAfter" BeforeTargets="Clean" Condition=" '$(IsDesktopBuild)' == 'true' or '$(BuildingInsideVisualStudio)' == 'true' ">
+    <PropertyGroup>
+      <DotNetPublishingImportAfter>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0\DotNet\Microsoft.DotNet.Publishing\ImportAfter\</DotNetPublishingImportAfter>
+    </PropertyGroup>
+    <Delete Files="$(DotNetPublishingImportAfter)\DockerTools2.targets" />
+    <Delete Files="$(DotNetPublishingImportAfter)\DockerTools2\DockerTools2.BuildTasks.dll" />
+    <Delete Files="$(DotNetPublishingImportAfter)\DockerTools2\DockerTools2.Shared.dll" />
+    <Delete Files="$(DotNetPublishingImportAfter)\DockerTools2\YamlDotNet.dll" />
   </Target>
 </Project>
