@@ -29,6 +29,25 @@ namespace DockerTools2
 
         public void OnAfterLaunch(DebugLaunchOptions launchOptions, IDebugProfile profile)
         {
+            DockerDevelopmentMode mode;
+            if (!DockerDevelopmentModeParser.TryParse(profile.Name, out mode))
+            {
+                throw new InvalidOperationException("The given profile is not supported");
+            }
+
+            var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
+
+            var launchSettings = workspace.ParseLaunchSettings(mode);
+
+            Uri applicationUrl;
+            if (!Uri.TryCreate(launchSettings.DebuggeeUrl, UriKind.Absolute, out applicationUrl))
+            {
+                return;
+            }
+
+            var dockerLogger = VsOutputWindowPaneHelper.GetDebugOutputWindowPane(ServiceProvider, false, true).ToDockerLogger();
+
+            workspace.OpenApplicationUrlInBrowserAsync(applicationUrl, dockerLogger).Forget();
         }
 
         public void OnBeforeLaunch(DebugLaunchOptions launchOptions, IDebugProfile profile)

@@ -9,12 +9,8 @@
   },
   "profiles": {
     "Docker Fast": {
-      "launchBrowser": true,
-      "launchUrl": "http://localhost"
     },
     "Docker Regular": {
-      "launchBrowser": true,
-      "launchUrl": "http://localhost"
     },
     "IIS Express": {
       "commandName": "IISExpress",

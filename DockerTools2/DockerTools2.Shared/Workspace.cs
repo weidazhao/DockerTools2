@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -105,6 +106,41 @@ namespace DockerTools2.Shared
                                                        $"-NonInteractive -ExecutionPolicy RemoteSigned {localPath} -Version 'VS2015U2' -RuntimeID 'debian.8-x64' -InstallPath '{clrDbgDirectory}'",
                                                        logger,
                                                        CancellationToken.None);
+        }
+
+        public async Task OpenApplicationUrlInBrowserAsync(Uri applicationUrl, IDockerLogger logger)
+        {
+            logger.LogMessage($"Launching the browser with URL {applicationUrl}");
+
+            const int MaxRetries = 30;
+
+            using (var httpClient = new HttpClient())
+            {
+                for (int retries = 0; retries < MaxRetries; retries++)
+                {
+                    try
+                    {
+                        var response = await httpClient.GetAsync(applicationUrl);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore exception.
+                    }
+
+                    // Wait a second before retry.
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                }
+            }
+
+            //
+            // Launch browser even if we couldn't reach the URL.
+            //
+            Process.Start(applicationUrl.AbsoluteUri);
         }
     }
 }

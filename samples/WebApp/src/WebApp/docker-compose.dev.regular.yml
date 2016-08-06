@@ -3,6 +3,7 @@ version: '2'
 services:
   webapp:
     labels:
+      - "com.microsoft.visualstudio.debuggee.url=http://localhost"
       - "com.microsoft.visualstudio.debuggee.program=dotnet"
       - "com.microsoft.visualstudio.debuggee.arguments=WebApp.dll"
       - "com.microsoft.visualstudio.debuggee.workingdirectory=/app"

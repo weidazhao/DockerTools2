@@ -11,6 +11,8 @@ namespace DockerTools2.Shared
 {
     public class LaunchSettings
     {
+        public string DebuggeeUrl { get; set; }
+
         public string DebuggeeProgram { get; set; }
 
         public string DebuggeeArguments { get; set; }
@@ -68,6 +70,12 @@ namespace DockerTools2.Shared
 
             var labels = service?.Labels;
             if (labels == null)
+            {
+                return null;
+            }
+
+            string debuggeeUrl;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.url", out debuggeeUrl))
             {
                 return null;
             }
@@ -130,6 +138,7 @@ namespace DockerTools2.Shared
 
             return new LaunchSettings()
             {
+                DebuggeeUrl = debuggeeUrl,
                 DebuggeeProgram = debuggeeProgram,
                 DebuggeeArguments = debuggeeArguments,
                 DebuggeeWorkingDirectory = debuggeeWorkingDirectory,

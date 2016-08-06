@@ -7,6 +7,7 @@ services:
       args:
         source: obj/empty-folder-for-docker-build
     labels:
+      - "com.microsoft.visualstudio.debuggee.url=http://localhost"
       - "com.microsoft.visualstudio.debuggee.program=dotnet"
       - "com.microsoft.visualstudio.debuggee.arguments=--additionalprobingpath /root/.nuget/packages bin/{Configuration}/{Framework}/WebApp.dll"
       - "com.microsoft.visualstudio.debuggee.workingdirectory=/app"
