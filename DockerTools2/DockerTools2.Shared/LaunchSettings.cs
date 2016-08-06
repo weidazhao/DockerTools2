@@ -17,7 +17,7 @@ namespace DockerTools2.Shared
 
         public string DebuggeeWorkingDirectory { get; set; }
 
-        public string DebuggeeTerminateProgram { get; set; }
+        public string DebuggeeKillProgram { get; set; }
 
         public string DebuggerProgram { get; set; }
 
@@ -90,8 +90,8 @@ namespace DockerTools2.Shared
                 return null;
             }
 
-            string debuggeeTerminateProgram;
-            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.terminateprogram", out debuggeeTerminateProgram))
+            string debuggeeKillProgram;
+            if (!TryGetValue(labels, "com.microsoft.visualstudio.debuggee.killprogram", out debuggeeKillProgram))
             {
                 return null;
             }
@@ -133,7 +133,7 @@ namespace DockerTools2.Shared
                 DebuggeeProgram = debuggeeProgram,
                 DebuggeeArguments = debuggeeArguments,
                 DebuggeeWorkingDirectory = debuggeeWorkingDirectory,
-                DebuggeeTerminateProgram = debuggeeTerminateProgram,
+                DebuggeeKillProgram = debuggeeKillProgram,
                 DebuggerProgram = debuggerProgram,
                 DebuggerArguments = debuggerArguments,
                 DebuggerTargetArchitecture = debuggerTargetArchitecture,

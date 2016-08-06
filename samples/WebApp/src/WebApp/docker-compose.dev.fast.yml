@@ -10,7 +10,7 @@ services:
       - "com.microsoft.visualstudio.debuggee.program=dotnet"
       - "com.microsoft.visualstudio.debuggee.arguments=--additionalprobingpath /root/.nuget/packages bin/{Configuration}/{Framework}/WebApp.dll"
       - "com.microsoft.visualstudio.debuggee.workingdirectory=/app"
-      - "com.microsoft.visualstudio.debuggee.terminateprogram=/bin/bash -c \"if PID=$$(pidof -x dotnet); then kill $$PID; fi\""
+      - "com.microsoft.visualstudio.debuggee.killprogram=/bin/bash -c \"if PID=$$(pidof -x dotnet); then kill $$PID; fi\""
       - "com.microsoft.visualstudio.debugger.program=/clrdbg/clrdbg"
       - "com.microsoft.visualstudio.debugger.arguments=--interpreter=mi"
       - "com.microsoft.visualstudio.debugger.targetarchitecture=x64"

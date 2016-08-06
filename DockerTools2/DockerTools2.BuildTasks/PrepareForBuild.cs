@@ -31,13 +31,13 @@ namespace DockerTools2.BuildTasks
             launchSettings.EnsureEmptyFolderForDockerBuildExists(workspace.WorkspaceDirectory);
 
             //
-            // Ensures that the process in the container is terminated.
+            // Ensures that the process in the container is killed.
             //
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.ServiceTag, logger, cancellationToken);
 
             if (!string.IsNullOrEmpty(containerId))
             {
-                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, logger, cancellationToken);
+                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeKillProgram, logger, cancellationToken);
             }
         }
     }

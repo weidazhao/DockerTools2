@@ -55,13 +55,26 @@ namespace DockerTools2
                 throw new InvalidOperationException("The given profile is not supported");
             }
 
+            if (mode == DockerDevelopmentMode.Regular && (launchOptions & DebugLaunchOptions.NoDebug) != 0)
+            {
+                throw new InvalidOperationException("Edit & Refresh is supported in fast mode only.");
+            }
+
             var dockerLogger = VsOutputWindowPaneHelper.GetDebugOutputWindowPane(ServiceProvider, false, true).ToDockerLogger();
 
             var workspace = new Workspace(Path.GetDirectoryName(ConfiguredProject.UnconfiguredProject.FullPath));
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
+            //
+            // Ensures debugger installed.
+            //
+
             await workspace.EnsureClrDbgExistsAsync(dockerLogger);
+
+            //
+            // Ensures docker compose is up.
+            //
 
             await workspace.DockerComposeClient.UpAsync(mode, dockerLogger);
 
@@ -70,6 +83,16 @@ namespace DockerTools2
             {
                 throw new InvalidOperationException($"Can not find the container with the name starting with {workspace.ServiceTag}.");
             }
+
+            //
+            // Ensures no existing debuggee process running in the container.
+            //
+
+            await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeKillProgram, dockerLogger);
+
+            //
+            // Launches app.
+            //
 
             string configuration = ConfiguredProject.ProjectConfiguration.Dimensions["Configuration"];
             string debuggeeArguments = launchSettings.DebuggeeArguments.Replace("{Configuration}", configuration).Replace("{Framework}", "netcoreapp1.0");
@@ -98,13 +121,6 @@ namespace DockerTools2
             }
             else
             {
-                if (mode == DockerDevelopmentMode.Regular)
-                {
-                    throw new InvalidOperationException("Edit & Refresh is supported in fast mode only.");
-                }
-
-                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, dockerLogger);
-
                 workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}", dockerLogger).Forget();
 
                 return new List<IDebugLaunchSettings>();
