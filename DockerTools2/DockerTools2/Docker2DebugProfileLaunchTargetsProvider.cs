@@ -101,6 +101,8 @@ namespace DockerTools2
                     throw new InvalidOperationException("Edit & Refresh is supported in fast mode only.");
                 }
 
+                await workspace.DockerClient.ExecAsync(containerId, launchSettings.DebuggeeTerminateProgram, dockerLogger);
+
                 workspace.DockerClient.ExecAsync(containerId, $"{launchSettings.DebuggeeProgram} {debuggeeArguments}", dockerLogger).Forget();
 
                 return new List<IDebugLaunchSettings>();
