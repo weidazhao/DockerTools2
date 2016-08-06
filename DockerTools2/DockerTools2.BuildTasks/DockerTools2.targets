@@ -4,6 +4,7 @@
   <UsingTask TaskName="PrepareForBuild" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
   <UsingTask TaskName="DockerComposeBuild" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
   <UsingTask TaskName="DockerComposeDown" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
+  <UsingTask TaskName="RemoveDanglingImages" AssemblyFile="DockerTools2\DockerTools2.BuildTasks.dll" />
 
   <Target Name="SetDockerDevelopmentMode" BeforeTargets="Clean;Build;DockerPrepareForBuild;DockerComposeBuild;DockerComposeDown">
     <PropertyGroup>
@@ -26,5 +27,6 @@
 
   <Target Name="DockerComposeDown" BeforeTargets="Clean" Condition=" '$(_DockerDevelopmentMode)' != '' ">
     <DockerComposeDown WorkspaceDirectory="$(MSBuildProjectDirectory)" Mode="$(_DockerDevelopmentMode)" RemoveAllImages="True" RemoveOrphans="True" ContinueOnError="True" />
+    <RemoveDanglingImages WorkspaceDirectory="$(MSBuildProjectDirectory)" Mode="$(_DockerDevelopmentMode)" ContinueOnError="True" />
   </Target>
 </Project>

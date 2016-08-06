@@ -3,9 +3,9 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,25 +51,25 @@ namespace DockerTools2.Shared
                 }
             });
 
-            var outputData = new StringBuilder();
+            var outputData = new List<string>();
 
             process.OutputDataReceived += (sender, e) =>
             {
                 if (e.Data != null)
                 {
-                    outputData.Append(e.Data);
+                    outputData.Add(e.Data);
 
                     logger?.LogMessage(e.Data);
                 }
             };
 
-            var errorData = new StringBuilder();
+            var errorData = new List<string>();
 
             process.ErrorDataReceived += (sender, e) =>
             {
                 if (e.Data != null)
                 {
-                    errorData.Append(e.Data);
+                    errorData.Add(e.Data);
 
                     //
                     // Docker sends info to stderr sometimes. Need to investigate if it's by design.
@@ -93,11 +93,11 @@ namespace DockerTools2.Shared
                 }
                 else if (process.ExitCode == 0)
                 {
-                    taskCompletionSource.TrySetResult(outputData.ToString());
+                    taskCompletionSource.TrySetResult(string.Join(Environment.NewLine, outputData));
                 }
                 else
                 {
-                    taskCompletionSource.TrySetException(new CommandLineClientException(errorData.ToString()));
+                    taskCompletionSource.TrySetException(new CommandLineClientException(string.Join(Environment.NewLine, errorData)));
                 }
 
                 process.Dispose();
