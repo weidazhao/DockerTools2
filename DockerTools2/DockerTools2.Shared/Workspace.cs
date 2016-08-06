@@ -2,7 +2,11 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System;
 using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using YamlDeserializer = YamlDotNet.Serialization.Deserializer;
 
 namespace DockerTools2.Shared
@@ -70,6 +74,37 @@ namespace DockerTools2.Shared
 
                 return LaunchSettings.FromDockerComposeDocument(ServiceName, document);
             }
+        }
+
+        public async Task EnsureClrDbgExistsAsync(IDockerLogger logger)
+        {
+            string clrDbgDirectory = Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "clrdbg"));
+
+            if (Directory.Exists(clrDbgDirectory))
+            {
+                return;
+            }
+
+            logger.LogMessage("Downloading Core CLR debugger...");
+
+            Uri downloadUrl = new Uri("https://raw.githubusercontent.com/Microsoft/MIEngine/getclrdbg-release/scripts/GetClrDbg.ps1", UriKind.Absolute);
+            string localPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "GetClrDbg.ps1"));
+
+            using (var client = new HttpClient())
+            {
+                using (var responseStream = await client.GetStreamAsync(downloadUrl))
+                {
+                    using (var fileStream = new FileStream(localPath, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        await responseStream.CopyToAsync(fileStream);
+                    }
+                }
+            }
+
+            await new CommandLineClient().ExecuteAsync(Environment.ExpandEnvironmentVariables(@"%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe"),
+                                                       $"-NonInteractive -ExecutionPolicy RemoteSigned {localPath} -Version 'VS2015U2' -RuntimeID 'debian.8-x64' -InstallPath '{clrDbgDirectory}'",
+                                                       logger,
+                                                       CancellationToken.None);
         }
     }
 }

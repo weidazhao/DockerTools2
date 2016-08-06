@@ -61,6 +61,8 @@ namespace DockerTools2
 
             var launchSettings = workspace.ParseLaunchSettings(mode);
 
+            await workspace.EnsureClrDbgExistsAsync(dockerLogger);
+
             await workspace.DockerComposeClient.UpAsync(mode, dockerLogger);
 
             string containerId = await workspace.DockerClient.GetContainerIdAsync(workspace.ServiceTag, dockerLogger);
