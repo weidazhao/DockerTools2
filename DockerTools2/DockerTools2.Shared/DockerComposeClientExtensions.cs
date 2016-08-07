@@ -21,7 +21,7 @@ namespace DockerTools2.Shared
                 throw new ArgumentException("Build is supported in the regular mode only.", nameof(mode));
             }
 
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath}",
+            return client.ExecuteAsync($"-f \"{client.Workspace.DockerComposeFilePath}\"",
                                        $"build" + (noCache ? " --no-cache" : ""),
                                        logger,
                                        cancellationToken);
@@ -32,7 +32,7 @@ namespace DockerTools2.Shared
                                            IDockerLogger logger,
                                            CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
+            return client.ExecuteAsync($"-f \"{client.Workspace.DockerComposeFilePath}\" -f \"{client.Workspace.GetDockerComposeDevFilePath(mode)}\"",
                                        "up -d" + (mode == DockerDevelopmentMode.Regular ? " --no-build" : ""),
                                        logger,
                                        cancellationToken);
@@ -45,7 +45,7 @@ namespace DockerTools2.Shared
                                              IDockerLogger logger,
                                              CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.ExecuteAsync($"-f {client.Workspace.DockerComposeFilePath} -f {client.Workspace.GetDockerComposeDevFilePath(mode)}",
+            return client.ExecuteAsync($"-f \"{client.Workspace.DockerComposeFilePath}\" -f \"{client.Workspace.GetDockerComposeDevFilePath(mode)}\"",
                                        "down" + (removeAllImages ? " --rmi all" : "") + (removeOrphans ? " --remove-orphans" : ""),
                                        logger,
                                        cancellationToken);

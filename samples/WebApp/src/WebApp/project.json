@@ -51,6 +51,7 @@
       "Areas/**/Views",
       "appsettings.json",
       "web.config",
+      ".dockerignore",
       "docker-compose.yml",
       "Dockerfile"
     ]
