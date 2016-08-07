@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  $service_name_lowercase$:
+    image: user/$service_name_lowercase$
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"

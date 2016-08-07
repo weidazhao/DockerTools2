@@ -58,6 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Templates\debian\.dockerignore" />
+    <EmbeddedResource Include="Templates\debian\docker-compose.dev.fast.yml" />
+    <EmbeddedResource Include="Templates\debian\docker-compose.dev.regular.yml" />
+    <EmbeddedResource Include="Templates\debian\docker-compose.yml" />
+    <EmbeddedResource Include="Templates\debian\Dockerfile" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  $service_name_lowercase$:
+    labels:
+      - "com.microsoft.visualstudio.debuggee.url=http://localhost"
+      - "com.microsoft.visualstudio.debuggee.program=dotnet"
+      - "com.microsoft.visualstudio.debuggee.arguments=$service_name$.dll"
+      - "com.microsoft.visualstudio.debuggee.workingdirectory=/app"
+      - "com.microsoft.visualstudio.debuggee.killprogram=/bin/bash -c \"if PID=$$(pidof -x dotnet); then kill $$PID; fi\""
+      - "com.microsoft.visualstudio.debugger.program=/clrdbg/clrdbg"
+      - "com.microsoft.visualstudio.debugger.arguments=--interpreter=mi"
+      - "com.microsoft.visualstudio.debugger.targetarchitecture=x64"
+      - "com.microsoft.visualstudio.debugger.mimode=clrdbg"
+    volumes:
+      - ~/clrdbg:/clrdbg:ro
+    entrypoint: tail -f /dev/null

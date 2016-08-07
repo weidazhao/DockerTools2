@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using YamlDeserializer = YamlDotNet.Serialization.Deserializer;
@@ -200,6 +201,43 @@ namespace DockerTools2.Shared
             // Launch browser even if we couldn't reach the URL.
             //
             Process.Start(applicationUrl.AbsoluteUri);
+        }
+
+        public void Scaffold(string runtimeId)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            string resourceNamePrefix = $"{assembly.GetName().Name}.Templates.{runtimeId}.";
+
+            string[] templateFiles = new string[]
+            {
+                ".dockerignore",
+                "docker-compose.dev.fast.yml",
+                "docker-compose.dev.regular.yml",
+                "docker-compose.yml",
+                "Dockerfile"
+            };
+
+            foreach (var templateFile in templateFiles)
+            {
+                string content;
+
+                using (var templateStream = assembly.GetManifestResourceStream(resourceNamePrefix + templateFile))
+                {
+                    using (var reader = new StreamReader(templateStream))
+                    {
+                        content = reader.ReadToEnd();
+                    }
+                }
+
+                content = content.Replace("$service_name$", _workspaceDirectory.Name)
+                                 .Replace("$service_name_lowercase$", ServiceName);
+
+                if (!File.Exists(Path.Combine(WorkspaceDirectory, templateFile)))
+                {
+                    File.WriteAllText(Path.Combine(WorkspaceDirectory, templateFile), content);
+                }
+            }
         }
     }
 }

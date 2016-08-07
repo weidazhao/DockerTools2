@@ -32,6 +32,8 @@ namespace DockerTools2
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideAutoLoad("8BB2217D-0F2D-49D1-97BC-3654ED321F3B")]
     public sealed class DockerTools2Package : Package
     {
         /// <summary>
@@ -59,6 +61,7 @@ namespace DockerTools2
         protected override void Initialize()
         {
             base.Initialize();
+            AddDockerSupportCommand.Initialize(this);
         }
 
         #endregion
