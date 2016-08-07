@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.ProjectSystem.DotNet;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Design;
@@ -121,6 +123,8 @@ namespace DockerTools2
             var workspace = new Workspace(Path.GetDirectoryName(hierarchy.DteProject.FullName));
 
             workspace.Scaffold("debian");
+
+            AddDockerDebugProfiles(workspace);
         }
 
         /// <summary>
@@ -185,6 +189,32 @@ namespace DockerTools2
             }
 
             return new Hierarchy(project);
+        }
+
+        private void AddDockerDebugProfiles(Workspace workspace)
+        {
+            string launchSettingsFile = Path.Combine(workspace.WorkspaceDirectory, @"Properties\launchSettings.json");
+
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                Formatting = Formatting.Indented
+            };
+
+            var content = JsonConvert.DeserializeObject(File.ReadAllText(launchSettingsFile), jsonSerializerSettings) as JObject;
+
+            string dockerProfiles =
+@"{
+  ""profiles"": {
+    ""Docker Fast"": {
+    },
+    ""Docker Regular"": {
+    }
+  }
+}";
+
+            content.Merge(JObject.Parse(dockerProfiles), new JsonMergeSettings() { MergeArrayHandling = MergeArrayHandling.Union });
+
+            File.WriteAllText(launchSettingsFile, JsonConvert.SerializeObject(content, jsonSerializerSettings));
         }
     }
 }
