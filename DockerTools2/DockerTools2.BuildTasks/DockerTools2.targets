@@ -22,6 +22,9 @@
   </Target>
 
   <Target Name="DockerComposeBuild" AfterTargets="Build" Condition=" '$(_DockerDevelopmentMode)' == 'Regular' ">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\.dockerignore" DestinationFolder="$(PublishOutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\Dockerfile" DestinationFolder="$(PublishOutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\docker-compose.yml" DestinationFolder="$(PublishOutputPath)" SkipUnchangedFiles="true" />
     <DockerComposeBuild WorkspaceDirectory="$(PublishOutputPath)" Mode="$(_DockerDevelopmentMode)" NoCache="True" />
   </Target>
 
