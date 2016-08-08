@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <?define VS_Root_Folder_Guid = "{449e567d-a78c-4850-99fd-0ec55abc3bb5}" ?>
+  <?define VisualStudioVersion = 14.0 ?>
+</Include>

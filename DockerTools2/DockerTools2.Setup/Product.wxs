@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="DockerTools2" Language="1033" Version="1.0" Manufacturer="Microsoft" UpgradeCode="4ECE549A-2D3D-4D19-B052-6F3D8C481CC5">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="Package.cab" EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="DockerTools2.Setup" Level="1">
+      <ComponentGroupRef Id="CompGroup_VS" />
+      <ComponentGroupRef Id="CompGroup_MSBuild" />
+      <ComponentGroupRef Id="CompGroup_MSBuild_Bin" />
+    </Feature>
+
+    <ComponentGroup Id="CompGroup_VS" Directory="Dir_ExtensionsWindowsAzureToolsDocker">
+      <Component Id="VS_Comp_DockerTools2.dll">
+        <File Id="VS_File_DockerTools2.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="DockerTools2.dll"
+              Source="$(var.DockerTools2.TargetDir)" />
+      </Component>
+
+      <Component Id="VS_Comp_DockerTools2.pkgdef">
+        <File Id="VS_File_DockerTools2.pkgdef"
+              DiskId="1"
+              KeyPath="yes"
+              Name="DockerTools2.pkgdef"
+              Source="$(var.DockerTools2.TargetDir)" />
+      </Component>
+
+      <Component Id="VS_Comp_DockerTools2.Shared.dll">
+        <File Id="VS_File_DockerTools2.Shared.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="DockerTools2.Shared.dll"
+              Source="$(var.DockerTools2.TargetDir)" />
+      </Component>
+
+      <Component Id="VS_Comp_extension.vsixmanifest">
+        <File Id="VS_File_extension.vsixmanifest"
+              DiskId="1"
+              KeyPath="yes"
+              Name="extension.vsixmanifest"
+              Source="$(var.DockerTools2.TargetDir)" />
+      </Component>
+
+      <Component Id="VS_Comp_Newtonsoft.Json.dll">
+        <File Id="VS_File_Newtonsoft.Json.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="Newtonsoft.Json.dll"
+              Source="$(var.DockerTools2.TargetDir)" />
+      </Component>
+
+      <Component Id="VS_Comp_YamlDotNet.dll">
+        <File Id="VS_File_YamlDotNet.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="YamlDotNet.dll"
+              Source="$(var.DockerTools2.TargetDir)" />
+      </Component>
+
+    </ComponentGroup>
+
+    <!-- MSBuild Extension -->
+
+    <ComponentGroup Id="CompGroup_MSBuild" Directory="Dir_MSBuildMSVSVersion_DotNet_Publishing_ImportAfter">
+      <Component Id="MSBuild_Comp_DockerTools2.targets">
+        <File Id="MSBuild_File_DockerTools2.targets"
+              DiskId="1"
+              KeyPath="yes"
+              Name="DockerTools2.targets"
+              Source="$(var.DockerTools2.BuildTasks.TargetDir)" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="CompGroup_MSBuild_Bin" Directory="Dir_MSBuildMSVSVersion_DotNet_Publishing_ImportAfter_DockerTools2">
+      <Component Id="MSBuild_Comp_DockerTools2.BuildTasks.dll">
+        <File Id="MSBuild_File_DockerTools2.BuildTasks.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="DockerTools2.BuildTasks.dll"
+              Source="$(var.DockerTools2.BuildTasks.TargetDir)" />
+      </Component>
+
+      <Component Id="MSBuild_Comp_DockerTools2.Shared.dll">
+        <File Id="MSBuild_File_DockerTools2.Shared.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="DockerTools2.Shared.dll"
+              Source="$(var.DockerTools2.BuildTasks.TargetDir)" />
+      </Component>
+
+      <Component Id="MSBuild_Comp_YamlDotNet.dll">
+        <File Id="MSBuild_File_YamlDotNet.dll"
+              DiskId="1"
+              KeyPath="yes"
+              Name="YamlDotNet.dll"
+              Source="$(var.DockerTools2.BuildTasks.TargetDir)" />
+      </Component>
+    </ComponentGroup>
+
+    <CustomAction Id="VSSetup" Property="VSDEVENV" ExeCommand="/setup" Execute="deferred" Return="ignore" Impersonate="no" />
+
+    <InstallExecuteSequence>
+      <Custom Action="VSSetup" Before="InstallFinalize" Overridable="yes" />
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

@@ -51,7 +51,9 @@
     <Compile Include="RemoveDanglingImages.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DockerTools2.targets" />
+    <None Include="DockerTools2.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

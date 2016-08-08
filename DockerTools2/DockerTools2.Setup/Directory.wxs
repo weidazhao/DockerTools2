@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) Microsoft Corporation.  All rights reserved
+-->
+<?include .\Variables.wxi?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+
+    <Property Id="VS_ROOT_FOLDER" Secure="yes">
+      <RegistrySearch Id="SearchForVSRootPath" Root="HKLM" Key="Software\Microsoft\VisualStudio\SxS\VS7" Name="$(var.VisualStudioVersion)" Type="raw" />
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder" Name="PFILES" />
+    </Directory>
+
+    <DirectoryRef Id="ProgramFilesFolder">
+      <Directory Id="VS_ROOT_FOLDER" ComponentGuidGenerationSeed="$(var.VS_Root_Folder_Guid)">
+        <Directory Id="VS_Common7" Name="Common7">
+          <Directory Id="Dir_IDE" Name="IDE">
+            <Directory Id="Dir_Extensions" Name="Extensions">
+              <Directory Id="Dir_ExtensionsMicrosoft" Name="Microsoft">
+                <Directory Id="Dir_ExtensionsWindowsAzureTools" Name="Windows Azure Tools">
+                  <Directory Id="Dir_ExtensionsWindowsAzureToolsDocker" Name="DockerTools2" />
+                </Directory>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="Dir_MSBuild" Name="MSBuild">
+        <Directory Id="Dir_MSBuildMS" Name="Microsoft">
+          <Directory Id="Dir_MSBuildMSVS" Name="VisualStudio">
+            <Directory Id="Dir_MSBuildMSVSVersion" Name="v14.0">
+              <Directory Id="Dir_MSBuildMSVSVersion_DotNet" Name="DotNet">
+                <Directory Id="Dir_MSBuildMSVSVersion_DotNet_Publishing" Name="Microsoft.DotNet.Publishing">
+                  <Directory Id="Dir_MSBuildMSVSVersion_DotNet_Publishing_ImportAfter" Name="ImportAfter">
+                    <Directory Id="Dir_MSBuildMSVSVersion_DotNet_Publishing_ImportAfter_DockerTools2" Name="DockerTools2" />
+                  </Directory>
+                </Directory>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+
+    </DirectoryRef>
+  </Fragment>
+</Wix>
