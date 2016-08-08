@@ -99,10 +99,10 @@
       </Component>
     </ComponentGroup>
 
-    <CustomAction Id="VSSetup" Property="VSDEVENV" ExeCommand="/setup" Execute="deferred" Return="ignore" Impersonate="no" />
+    <CustomActionRef Id="VS2015Setup" />
 
     <InstallExecuteSequence>
-      <Custom Action="VSSetup" Before="InstallFinalize" Overridable="yes" />
+      <Custom Action="VS2015Setup" Before="InstallFinalize" />
     </InstallExecuteSequence>
   </Product>
 </Wix>

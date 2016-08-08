@@ -32,7 +32,7 @@
       <Directory Id="Dir_MSBuild" Name="MSBuild">
         <Directory Id="Dir_MSBuildMS" Name="Microsoft">
           <Directory Id="Dir_MSBuildMSVS" Name="VisualStudio">
-            <Directory Id="Dir_MSBuildMSVSVersion" Name="v14.0">
+            <Directory Id="Dir_MSBuildMSVSVersion" Name="v$(var.VisualStudioVersion)">
               <Directory Id="Dir_MSBuildMSVSVersion_DotNet" Name="DotNet">
                 <Directory Id="Dir_MSBuildMSVSVersion_DotNet_Publishing" Name="Microsoft.DotNet.Publishing">
                   <Directory Id="Dir_MSBuildMSVSVersion_DotNet_Publishing_ImportAfter" Name="ImportAfter">
