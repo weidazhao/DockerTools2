@@ -211,7 +211,6 @@ namespace DockerTools2.Shared
 
             string[] templateFiles = new string[]
             {
-                ".dockerignore",
                 "docker-compose.dev.fast.yml",
                 "docker-compose.dev.regular.yml",
                 "docker-compose.yml",
