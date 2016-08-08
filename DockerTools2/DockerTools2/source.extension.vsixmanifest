@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="DockerTools2.Weida Zhao.02e09874-f413-49f8-b5f0-db1995798c86" Version="1.0" Language="en-US" Publisher="Weida Zhao" />
+    <Identity Id="02e09874-f413-49f8-b5f0-db1995798c86" Version="1.0" Language="en-US" Publisher="Microsoft Corporation" />
     <DisplayName>DockerTools2</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Description>DockerTools2</Description>
   </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+  <Installation InstalledByMsi="true" AllUsers="true">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[14.0,]" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
