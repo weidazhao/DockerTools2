@@ -32,7 +32,7 @@ namespace DockerTools2.LanguageService
         public DockerfileCompletionSource(ITextBuffer buffer, IGlyphService glyphService)
         {
             _buffer = buffer;
-            _glyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemPublic);
+            _glyph = glyphService.GetGlyph(StandardGlyphGroup.GlyphKeyword, StandardGlyphItem.GlyphItemPublic);
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)

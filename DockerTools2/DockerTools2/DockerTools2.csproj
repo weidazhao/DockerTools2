@@ -77,6 +77,10 @@
     <Compile Include="LanguageService\DockerColorizer.cs" />
     <Compile Include="LanguageService\DockerLanguageService.cs" />
     <Compile Include="LanguageService\DockerSource.cs" />
+    <Compile Include="LanguageService\QuickInfo\DockerQuickInfo.cs" />
+    <Compile Include="LanguageService\QuickInfo\DockerQuickInfoController.cs" />
+    <Compile Include="LanguageService\QuickInfo\DockerQuickInfoControllerProvider.cs" />
+    <Compile Include="LanguageService\QuickInfo\DockerQuickInfoSourceProvider.cs" />
     <Compile Include="LanguageService\TextCreationListener.cs" />
     <Compile Include="LanguageService\TypeThrough\ProvisionalText.cs" />
     <Compile Include="LanguageService\TypeThrough\TypeThroughController.cs" />
