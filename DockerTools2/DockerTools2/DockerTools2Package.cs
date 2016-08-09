@@ -45,7 +45,6 @@ namespace DockerTools2
         /// DockerTools2Package GUID string.
         /// </summary>
         public const string PackageGuidString = "3cf38592-ae02-40eb-a11e-6f19fc4cc1e9";
-        public const string ActivationGuidString = "fdcdac1d-bdc9-4e79-934f-93e0de56bb2b";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DockerTools2Package"/> class.

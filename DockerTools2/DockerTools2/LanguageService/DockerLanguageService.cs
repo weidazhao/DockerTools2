@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace DockerTools2.LanguageService
 {
-    [Guid("ecf70314-91e6-490d-8ea3-45e82b2d28e9")]
+    [Guid("b09ec8c5-83b8-44b5-bbbf-e7c4bd17d3ac")]
     public class DockerLanguageService : Microsoft.VisualStudio.Package.LanguageService
     {
         public const string LanguageName = "Docker File";
@@ -18,11 +18,6 @@ namespace DockerTools2.LanguageService
         public override Source CreateSource(IVsTextLines buffer)
         {
             return new DockerSource(this, buffer, new DockerColorizer(this, buffer, null));
-        }
-
-        public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
-        {
-            return null;
         }
 
         public override LanguagePreferences GetLanguagePreferences()
