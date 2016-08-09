@@ -20,7 +20,7 @@ namespace DockerTools2.LanguageService
 
         public IQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
         {
-            return new DockerQuickInfo(textBuffer, ClassifierAggregatorService, GlyphService);
+            return textBuffer.Properties.GetOrCreateSingletonProperty(() => new DockerQuickInfo(textBuffer, ClassifierAggregatorService, GlyphService));
         }
     }
 }

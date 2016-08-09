@@ -17,7 +17,10 @@ namespace DockerTools2.LanguageService
 
         public IIntellisenseController TryCreateIntellisenseController(ITextView textView, IList<ITextBuffer> subjectBuffers)
         {
-            return new DockerQuickInfoController(textView, subjectBuffers, this);
+            if (!DockerTools2Package.LanguageService.Preferences.EnableQuickInfo)
+                return null;
+
+            return textView.Properties.GetOrCreateSingletonProperty(() => new DockerQuickInfoController(textView, subjectBuffers, this));
         }
     }
 }

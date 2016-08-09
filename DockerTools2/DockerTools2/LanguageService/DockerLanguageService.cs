@@ -1,6 +1,6 @@
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.TextManager.Interop;
-using System.Runtime.InteropServices;
 
 namespace DockerTools2.LanguageService
 {
@@ -9,6 +9,7 @@ namespace DockerTools2.LanguageService
     {
         public const string LanguageName = "Docker File";
         private LanguagePreferences preferences = null;
+        private IScanner _scanner;
 
         public DockerLanguageService(object site)
         {
@@ -17,7 +18,7 @@ namespace DockerTools2.LanguageService
 
         public override Source CreateSource(IVsTextLines buffer)
         {
-            return new DockerSource(this, buffer, new DockerColorizer(this, buffer, null));
+            return new DockerSource(this, buffer, new DockerColorizer(this, buffer, _scanner));
         }
 
         public override LanguagePreferences GetLanguagePreferences()
@@ -55,7 +56,10 @@ namespace DockerTools2.LanguageService
 
         public override IScanner GetScanner(IVsTextLines buffer)
         {
-            return null;
+            if (_scanner == null)
+                _scanner = new DockerScanner(buffer);
+
+            return _scanner;
         }
 
         public override AuthoringScope ParseSource(ParseRequest req)

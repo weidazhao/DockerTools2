@@ -16,7 +16,7 @@ namespace DockerTools2.LanguageService
     {
         public IIntellisenseController TryCreateIntellisenseController(ITextView view, IList<ITextBuffer> subjectBuffers)
         {
-            if (subjectBuffers.Count > 0)
+            if (subjectBuffers.Count > 0 && DockerTools2Package.LanguageService.Preferences.EnableMatchBraces)
             {
                 return view.Properties.GetOrCreateSingletonProperty(() => new DockerypeThroughController(view, subjectBuffers));
             }

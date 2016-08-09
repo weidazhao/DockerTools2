@@ -62,6 +62,9 @@ namespace DockerTools2.LanguageService
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
+                    if (!DockerTools2Package.LanguageService.Preferences.AutoListMembers)
+                        return hresult;
+
                     switch ((VSConstants.VSStd2KCmdID)nCmdID)
                     {
                         case VSConstants.VSStd2KCmdID.TYPECHAR:

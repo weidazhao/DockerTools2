@@ -38,13 +38,15 @@ namespace DockerTools2
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad("8BB2217D-0F2D-49D1-97BC-3654ED321F3B")]
-    [ProvideLanguageService(typeof(DockerLanguageService), DockerLanguageService.LanguageName, 100, DefaultToInsertSpaces = true, EnableCommenting = true, EnableLineNumbers = true, ShowCompletion = true)]
+    [ProvideLanguageService(typeof(DockerLanguageService), DockerLanguageService.LanguageName, 100, EnableCommenting = true, ShowCompletion = true, MatchBraces = true, MatchBracesAtCaret = true, ShowMatchingBrace = true, QuickInfo = true)]
     public sealed class DockerTools2Package : Package
     {
         /// <summary>
         /// DockerTools2Package GUID string.
         /// </summary>
         public const string PackageGuidString = "3cf38592-ae02-40eb-a11e-6f19fc4cc1e9";
+
+        public static DockerLanguageService LanguageService { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DockerTools2Package"/> class.
@@ -69,8 +71,8 @@ namespace DockerTools2
             AddDockerSupportCommand.Initialize(this);
 
             var serviceContainer = this as IServiceContainer;
-            var langService = new DockerLanguageService(this);
-            serviceContainer.AddService(typeof(DockerLanguageService), langService, true);
+            LanguageService = new DockerLanguageService(this);
+            serviceContainer.AddService(typeof(DockerLanguageService), LanguageService, true);
         }
 
         #endregion

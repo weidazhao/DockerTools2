@@ -73,6 +73,7 @@
     <Compile Include="LanguageService\Completion\DockerfileCompletionController.cs" />
     <Compile Include="LanguageService\Completion\DockerfileCompletionSource.cs" />
     <Compile Include="LanguageService\ContentType\ContentTypeDefinition.cs" />
+    <Compile Include="LanguageService\DockerScanner.cs" />
     <Compile Include="LanguageService\LanguageTokens.cs" />
     <Compile Include="LanguageService\DockerColorizer.cs" />
     <Compile Include="LanguageService\DockerLanguageService.cs" />
