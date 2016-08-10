@@ -38,7 +38,7 @@ namespace DockerTools2
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad("8BB2217D-0F2D-49D1-97BC-3654ED321F3B")]
-    [ProvideLanguageService(typeof(DockerLanguageService), DockerLanguageService.LanguageName, 100, EnableCommenting = true, ShowCompletion = true, MatchBraces = true, MatchBracesAtCaret = true, ShowMatchingBrace = true, QuickInfo = true)]
+    [ProvideLanguageService(typeof(DockerLanguageService), DockerLanguageService.LanguageName, 100, EnableCommenting = true, EnableLineNumbers = true, ShowCompletion = true, MatchBraces = true, MatchBracesAtCaret = true, ShowMatchingBrace = true, QuickInfo = true)]
     public sealed class DockerTools2Package : Package
     {
         /// <summary>

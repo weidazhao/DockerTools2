@@ -67,6 +67,8 @@
     <Compile Include="Hierarchy.cs" />
     <Compile Include="HierarchyExtensions.cs" />
     <Compile Include="HierarchyItem.cs" />
+    <Compile Include="LanguageService\BraceCompletion\BraceCompletionContext.cs" />
+    <Compile Include="LanguageService\BraceCompletion\BraceCompletionContextProvider.cs" />
     <Compile Include="LanguageService\Classifier\DockerfileClassificationTypes.cs" />
     <Compile Include="LanguageService\Classifier\DockerfileClassifier.cs" />
     <Compile Include="LanguageService\Classifier\DockerfileClassifierProvider.cs" />
@@ -83,9 +85,6 @@
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoControllerProvider.cs" />
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoSourceProvider.cs" />
     <Compile Include="LanguageService\TextCreationListener.cs" />
-    <Compile Include="LanguageService\TypeThrough\ProvisionalText.cs" />
-    <Compile Include="LanguageService\TypeThrough\TypeThroughController.cs" />
-    <Compile Include="LanguageService\TypeThrough\TypeThroughControllerProvider.cs" />
     <Compile Include="LanguageService\Validation\DockerValidationProvider.cs" />
     <Compile Include="LanguageService\Validation\DockerValidationTagger.cs" />
     <Compile Include="NativeMethods.cs" />
