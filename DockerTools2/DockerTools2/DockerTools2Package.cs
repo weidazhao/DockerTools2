@@ -8,6 +8,10 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using DockerTools2.LanguageService;
+using System.ComponentModel.Design;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio;
 
 namespace DockerTools2
 {
@@ -34,12 +38,16 @@ namespace DockerTools2
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad("8BB2217D-0F2D-49D1-97BC-3654ED321F3B")]
+    [ProvideLanguageService(typeof(DockerLanguageService), DockerLanguageService.LanguageName, 100, EnableCommenting = true, EnableLineNumbers = true, ShowCompletion = true, MatchBraces = true, MatchBracesAtCaret = true, ShowMatchingBrace = true, QuickInfo = true)]
+    [ProvideBraceCompletion(DockerLanguageService.LanguageName)]
     public sealed class DockerTools2Package : Package
     {
         /// <summary>
         /// DockerTools2Package GUID string.
         /// </summary>
         public const string PackageGuidString = "3cf38592-ae02-40eb-a11e-6f19fc4cc1e9";
+
+        public static DockerLanguageService LanguageService { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DockerTools2Package"/> class.
@@ -62,8 +70,22 @@ namespace DockerTools2
         {
             base.Initialize();
             AddDockerSupportCommand.Initialize(this);
+
+            var serviceContainer = this as IServiceContainer;
+            LanguageService = new DockerLanguageService(this);
+            serviceContainer.AddService(typeof(DockerLanguageService), LanguageService, true);
         }
 
         #endregion
+
+        public static void ForecePackageLoad()
+        {
+            var shell = (IVsShell)GetGlobalService(typeof(SVsShell));
+            var guid = new Guid(PackageGuidString);
+            IVsPackage package;
+
+            if (shell.IsPackageLoaded(ref guid, out package) != VSConstants.S_OK)
+                ErrorHandler.Succeeded(shell.LoadPackage(ref guid, out package));
+        }
     }
 }
