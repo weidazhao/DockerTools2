@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Language.StandardClassification;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 
@@ -62,6 +63,9 @@ namespace DockerTools2.LanguageService
         {
             public QuickInfoControl(Image image)
             {
+                Keyword.SetResourceReference(TextBlock.ForegroundProperty, EnvironmentColors.BrandedUITitleBrushKey);
+                Description.SetResourceReference(TextBlock.ForegroundProperty, EnvironmentColors.BrandedUITitleBrushKey);
+
                 image.Margin = new Thickness(0, 0, 10, 0);
 
                 var header = new DockPanel();

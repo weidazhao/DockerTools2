@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
-
 namespace DockerTools2.LanguageService
 {
     [Export(typeof(ITaggerProvider))]

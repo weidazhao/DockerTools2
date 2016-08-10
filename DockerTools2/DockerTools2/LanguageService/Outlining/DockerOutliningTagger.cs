@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
@@ -18,10 +17,8 @@ namespace DockerTools2.LanguageService
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (spans.Count == 0  || !DockerTools2Package.LanguageService.Preferences.AutoOutlining)
-                return Enumerable.Empty<ITagSpan<IOutliningRegionTag>>();
-
-            var list = new List<ITagSpan<IOutliningRegionTag>>();
+            if (spans.Count == 0 || !DockerTools2Package.LanguageService.Preferences.AutoOutlining)
+                yield break;
 
             var lines = _buffer.CurrentSnapshot.Lines;
             ITextSnapshotLine start = null, end = null;
@@ -41,14 +38,12 @@ namespace DockerTools2.LanguageService
                     if (start != null && end != null)
                     {
                         var span = new SnapshotSpan(start.Start, end.End);
-                        list.Add(CreateTag(span, start.GetText(), span.GetText()));
+                        yield return CreateTag(span, start.GetText(), span.GetText());
                     }
 
                     start = end = null;
                 }
             }
-
-            return list;
         }
 
         private static TagSpan<IOutliningRegionTag> CreateTag(SnapshotSpan span, string text, string tooltip = null)
