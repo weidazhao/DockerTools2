@@ -9,7 +9,7 @@ namespace DockerTools2.LanguageService
 {
     [Export(typeof(IIntellisenseControllerProvider))]
     [Name("Docker QuickInfo Controller")]
-    [ContentType(DockerContentTypeDefinition.DockerContentType)]
+    [ContentType(ContentTypes.DockerContentType)]
     public class DockerQuickInfoControllerProvider : IIntellisenseControllerProvider
     {
         [Import]

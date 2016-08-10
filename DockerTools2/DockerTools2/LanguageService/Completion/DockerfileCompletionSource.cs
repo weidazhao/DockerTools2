@@ -10,7 +10,7 @@ using Intel = Microsoft.VisualStudio.Language.Intellisense;
 namespace DockerTools2.LanguageService
 {
     [Export(typeof(ICompletionSourceProvider))]
-    [ContentType(DockerContentTypeDefinition.DockerContentType)]
+    [ContentType(ContentTypes.DockerContentType)]
     [Name("DockerfileCompletion")]
     class DockerfileCompletionSourceProvider : ICompletionSourceProvider
     {

@@ -74,12 +74,14 @@
     <Compile Include="LanguageService\Classifier\DockerfileClassifierProvider.cs" />
     <Compile Include="LanguageService\Completion\DockerfileCompletionController.cs" />
     <Compile Include="LanguageService\Completion\DockerfileCompletionSource.cs" />
-    <Compile Include="LanguageService\ContentType\ContentTypeDefinition.cs" />
-    <Compile Include="LanguageService\DockerScanner.cs" />
+    <Compile Include="LanguageService\ContentType\ContentTypes.cs" />
     <Compile Include="LanguageService\LanguageTokens.cs" />
     <Compile Include="LanguageService\DockerColorizer.cs" />
     <Compile Include="LanguageService\DockerLanguageService.cs" />
     <Compile Include="LanguageService\DockerSource.cs" />
+    <Compile Include="LanguageService\Outlining\DockerOutliningProvider.cs" />
+    <Compile Include="LanguageService\Outlining\DockerOutliningTagger.cs" />
+    <Compile Include="LanguageService\ProvideBraceCompletionAttribute.cs" />
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfo.cs" />
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoController.cs" />
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoControllerProvider.cs" />

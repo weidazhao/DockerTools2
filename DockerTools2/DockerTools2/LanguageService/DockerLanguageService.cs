@@ -9,7 +9,6 @@ namespace DockerTools2.LanguageService
     {
         public const string LanguageName = "Docker File";
         private LanguagePreferences preferences = null;
-        private IScanner _scanner;
 
         public DockerLanguageService(object site)
         {
@@ -18,7 +17,7 @@ namespace DockerTools2.LanguageService
 
         public override Source CreateSource(IVsTextLines buffer)
         {
-            return new DockerSource(this, buffer, new DockerColorizer(this, buffer, _scanner));
+            return new DockerSource(this, buffer, new DockerColorizer(this, buffer, null));
         }
 
         public override LanguagePreferences GetLanguagePreferences()
@@ -39,7 +38,7 @@ namespace DockerTools2.LanguageService
                     preferences.HighlightMatchingBraceFlags = _HighlightMatchingBraceFlags.HMB_USERECTANGLEBRACES;
                     preferences.LineNumbers = true;
                     preferences.MaxErrorMessages = 100;
-                    preferences.AutoOutlining = false;
+                    preferences.AutoOutlining = true;
                     preferences.MaxRegionTime = 2000;
                     preferences.ShowNavigationBar = false;
                     preferences.InsertTabs = false;
@@ -56,10 +55,7 @@ namespace DockerTools2.LanguageService
 
         public override IScanner GetScanner(IVsTextLines buffer)
         {
-            if (_scanner == null)
-                _scanner = new DockerScanner(buffer);
-
-            return _scanner;
+            return null;
         }
 
         public override AuthoringScope ParseSource(ParseRequest req)

@@ -47,7 +47,7 @@ namespace DockerTools2.LanguageService
                 ErrorHandler.ThrowOnFailure(textViewAdapter.GetBuffer(out lines));
                 lines.SetLanguageServiceID(typeof(DockerLanguageService).GUID);
 
-                IContentType contentType = Registry.GetContentType(DockerContentTypeDefinition.DockerContentType);
+                IContentType contentType = Registry.GetContentType(ContentTypes.DockerContentType);
                 textView.TextBuffer.ChangeContentType(contentType, _contentTag);
 
                 CommandFilter filter = new CommandFilter(textView, CompletionBroker);

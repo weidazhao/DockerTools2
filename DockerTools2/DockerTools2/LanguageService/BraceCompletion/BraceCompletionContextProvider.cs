@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Utilities;
 namespace DockerTools2.LanguageService
 {
     [Export(typeof(IBraceCompletionContextProvider))]
-    [ContentType(DockerContentTypeDefinition.DockerContentType)]
+    [ContentType(ContentTypes.DockerContentType)]
     [BracePair('{', '}')]
     [BracePair('(', ')')]
     [BracePair('[', ']')]
@@ -24,6 +24,11 @@ namespace DockerTools2.LanguageService
 
         public bool TryCreateContext(ITextView textView, SnapshotPoint openingPoint, char openingBrace, char closingBrace, out IBraceCompletionContext context)
         {
+            context = null;
+
+            if (!DockerTools2Package.LanguageService.Preferences.EnableMatchBraces)
+                return false;
+
             var editorOperations = EditOperationsFactory.GetEditorOperations(textView);
             var undoHistory = UndoHistoryRegistry.GetHistory(textView.TextBuffer);
 
@@ -34,7 +39,6 @@ namespace DockerTools2.LanguageService
             }
             else
             {
-                context = null;
                 return false;
             }
         }
@@ -47,7 +51,7 @@ namespace DockerTools2.LanguageService
             if (openingBrace == '"' || openingBrace == '\'')
             {
                 var prevChar = openingPoint.Snapshot.GetText(openingPoint.Position - 1, 1)[0];
-                return char.IsWhiteSpace(prevChar);
+                return !char.IsLetter(prevChar) && !char.IsNumber(prevChar);
             }
 
             return true;

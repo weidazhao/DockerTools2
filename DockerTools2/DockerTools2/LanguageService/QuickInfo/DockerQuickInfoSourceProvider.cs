@@ -9,7 +9,7 @@ namespace DockerTools2.LanguageService
     [Export(typeof(IQuickInfoSourceProvider))]
     [Name("Docker QuickInfo Source")]
     [Order(Before = "Default Quick Info Presenter")]
-    [ContentType(DockerContentTypeDefinition.DockerContentType)]
+    [ContentType(ContentTypes.DockerContentType)]
     internal class DockerQuickInfoSourceProvider : IQuickInfoSourceProvider
     {
         [Import]

@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Utilities;
 namespace DockerTools2.LanguageService
 {
     [Export(typeof(IClassifierProvider))]
-    [ContentType(DockerContentTypeDefinition.DockerContentType)]
+    [ContentType(ContentTypes.DockerContentType)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
     public class DockerfileClassifierProvider : IClassifierProvider
     {

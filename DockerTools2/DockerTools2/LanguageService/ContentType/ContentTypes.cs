@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace DockerTools2.LanguageService
 {
-    public class DockerContentTypeDefinition
+    public class ContentTypes
     {
         public const string DockerContentType = "DockerFile";
 
