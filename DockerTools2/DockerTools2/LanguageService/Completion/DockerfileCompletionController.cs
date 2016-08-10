@@ -69,7 +69,7 @@ namespace DockerTools2.LanguageService
                     {
                         case VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
-                            if (ch == ':')
+                            if (ch == ' ')
                                 Cancel();
                             else if (!char.IsPunctuation(ch) && !char.IsControl(ch))
                                 StartSession();

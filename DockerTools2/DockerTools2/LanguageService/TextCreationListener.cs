@@ -24,10 +24,13 @@ namespace DockerTools2.LanguageService
         ITextDocumentFactoryService TextDocumentFactoryService { get; set; }
 
         [Import]
-        public IContentTypeRegistryService Registry { get; set; }
+        IContentTypeRegistryService Registry { get; set; }
 
         [Import]
         ICompletionBroker CompletionBroker { get; set; }
+
+        [Import]
+        ISignatureHelpBroker SignatureHelpBroker { get; set; }
 
         private static readonly Guid _contentTag = new Guid();
 
@@ -54,6 +57,8 @@ namespace DockerTools2.LanguageService
                 IOleCommandTarget next;
                 ErrorHandler.ThrowOnFailure(textViewAdapter.AddCommandFilter(filter, out next));
                 filter.Next = next;
+
+                textView.Properties.GetOrCreateSingletonProperty(() => new DockerSignatureHelpCommand(textViewAdapter, textView, SignatureHelpBroker));
             }
         }
     }

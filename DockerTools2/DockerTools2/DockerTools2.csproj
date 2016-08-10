@@ -86,6 +86,11 @@
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoController.cs" />
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoControllerProvider.cs" />
     <Compile Include="LanguageService\QuickInfo\DockerQuickInfoSourceProvider.cs" />
+    <Compile Include="LanguageService\SignatureHelp\DockerFactory.cs" />
+    <Compile Include="LanguageService\SignatureHelp\DockerSignature.cs" />
+    <Compile Include="LanguageService\SignatureHelp\DockerSignatureHelpCommand.cs" />
+    <Compile Include="LanguageService\SignatureHelp\DockerSignatureHelpSource.cs" />
+    <Compile Include="LanguageService\SignatureHelp\DockerSignatureHelpSourceProvider.cs" />
     <Compile Include="LanguageService\TextCreationListener.cs" />
     <Compile Include="LanguageService\Validation\DockerValidationProvider.cs" />
     <Compile Include="LanguageService\Validation\DockerValidationTagger.cs" />

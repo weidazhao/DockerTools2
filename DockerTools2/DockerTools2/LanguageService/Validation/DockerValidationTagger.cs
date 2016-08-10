@@ -36,6 +36,15 @@ namespace DockerTools2.LanguageService
 
             if (!LanguageTokens.Keywords.ContainsKey(keyword))
             {
+                if (line.LineNumber > 1)
+                {
+                    var prevLine = span.Snapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                    var prevText = prevLine.GetText().TrimEnd();
+
+                    if (prevText.EndsWith("\\"))
+                        yield break;
+                }
+
                 var sSpan = new SnapshotSpan(span.Start, keyword.Length);
                 var tag = new ErrorTag("Intellisense", $"\"{tokens[0].Trim()}\" is not a known Dockerfile keyword.");
                 yield return new TagSpan<IErrorTag>(sSpan, tag);
